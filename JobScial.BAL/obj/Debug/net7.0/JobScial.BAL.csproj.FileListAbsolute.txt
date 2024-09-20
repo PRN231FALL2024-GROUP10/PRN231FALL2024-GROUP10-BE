@@ -1,0 +1,11 @@
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\bin\Debug\net7.0\JobScial.BAL.deps.json
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\bin\Debug\net7.0\JobScial.BAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\bin\Debug\net7.0\JobScial.BAL.pdb
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.AssemblyInfoInputs.cache
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.AssemblyInfo.cs
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.csproj.CoreCompileInputs.cache
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\refint\JobScial.BAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.pdb
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\ref\JobScial.BAL.dll

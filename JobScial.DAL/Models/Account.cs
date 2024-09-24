@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class Account
 {
-    public Guid? AccountId { get; set; }
+    public int AccountId { get; set; }
 
     public string Email { get; set; } = null!;
 

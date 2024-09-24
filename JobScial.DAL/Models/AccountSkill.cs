@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class AccountSkill
 {
-    public Guid AccountId { get; set; }
+    public int AccountId { get; set; }
 
     public int SkillCategoryId { get; set; }
 

@@ -5,19 +5,19 @@ namespace JobScial.DAL.Models;
 
 public partial class Post
 {
-    public Guid PostId { get; set; }
+    public int PostId { get; set; }
 
     public string? Content { get; set; }
 
     public int? PostCategoryId { get; set; }
 
-    public Guid? GroupId { get; set; }
+    public int? GroupId { get; set; }
 
     public int? JobId { get; set; }
 
     public DateTime? CreatedOn { get; set; }
 
-    public Guid? CreatedBy { get; set; }
+    public int? CreatedBy { get; set; }
 
     public bool? HasPhoto { get; set; }
 

@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class Report
 {
-    public Guid? ReportId { get; set; }
+    public int? ReportId { get; set; }
 
     public string? Reason { get; set; }
 

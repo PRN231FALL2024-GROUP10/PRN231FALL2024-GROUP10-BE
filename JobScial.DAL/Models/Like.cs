@@ -5,9 +5,9 @@ namespace JobScial.DAL.Models;
 
 public partial class Like
 {
-    public Guid PostId { get; set; }
+    public int PostId { get; set; }
 
-    public Guid AccountId { get; set; }
+    public int AccountId { get; set; }
 
     public virtual Post Post { get; set; } = null!;
 }

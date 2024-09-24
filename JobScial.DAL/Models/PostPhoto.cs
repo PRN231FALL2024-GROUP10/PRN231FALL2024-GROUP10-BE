@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class PostPhoto
 {
-    public Guid PostId { get; set; }
+    public int PostId { get; set; }
 
     public int Index { get; set; }
 

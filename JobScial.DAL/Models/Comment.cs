@@ -5,11 +5,11 @@ namespace JobScial.DAL.Models;
 
 public partial class Comment
 {
-    public Guid CommentId { get; set; }
+    public int CommentId { get; set; }
 
-    public Guid? PostId { get; set; }
+    public int? PostId { get; set; }
 
-    public Guid? AccountId { get; set; }
+    public int? AccountId { get; set; }
 
     public string? Content { get; set; }
 

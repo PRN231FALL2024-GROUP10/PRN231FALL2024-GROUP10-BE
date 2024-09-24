@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class PostSkill
 {
-    public Guid PostId { get; set; }
+    public int PostId { get; set; }
 
     public int? SkillCategoryId { get; set; }
 

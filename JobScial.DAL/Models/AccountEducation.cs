@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class AccountEducation
 {
-    public Guid AccountId { get; set; }
+    public int AccountId { get; set; }
 
     public int SchoolId { get; set; }
 

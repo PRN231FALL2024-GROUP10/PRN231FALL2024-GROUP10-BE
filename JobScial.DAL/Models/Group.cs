@@ -5,7 +5,7 @@ namespace JobScial.DAL.Models;
 
 public partial class Group
 {
-    public Guid GroupId { get; set; }
+    public int GroupId { get; set; }
 
     public int? CompanyId { get; set; }
 

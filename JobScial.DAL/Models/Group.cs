@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobScial.DAL.Models;
 
 public partial class Group
 {
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
     public int GroupId { get; set; }
 
     public int? CompanyId { get; set; }

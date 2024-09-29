@@ -21,7 +21,7 @@ namespace JobScial.DAL.DAOs
         {
             try
             {
-                return await _dbContext.Accounts.Include(a => a.Role)
+                return await _dbContext.Accounts
                                        .SingleOrDefaultAsync(a => a.Email.Equals(email.Trim().ToLower())
                                                                && a.Password.Equals(password));
 
@@ -37,7 +37,7 @@ namespace JobScial.DAL.DAOs
 
             try
             {
-                return await this._dbContext.Accounts.Include(a => a.Role)
+                return await this._dbContext.Accounts
                     .SingleOrDefaultAsync(a => a.Email.Equals(email));
             }
             catch (Exception ex)

@@ -50,16 +50,16 @@ namespace JobScial.DAL.Repositorys.Implementations
                     FullName = registerRequest.FullName,
                     Gender = registerRequest.Gender,
                     DoB = registerRequest.DoB,
-                    CreatedOn = registerRequest.CreatedOn,
+                    CreatedOn = DateTime.Now,
                     Image = registerRequest.Image,
                     FullNameSearch = registerRequest.FullNameSearch,
 
                 };
-                await _unitOfWork.AccountDAO.AddNewAccount(account);
 
-                // Upload image to firebase
-                
+                AccountCertificate accountCertificate = new AccountCertificate
+                {
 
+                };
                 await _unitOfWork.AccountDAO.AddNewAccount(account);
 
                 //Save to Database
@@ -71,7 +71,7 @@ namespace JobScial.DAL.Repositorys.Implementations
                     Email = account.Email,
                     Password = account.Password,
                     Role = account.Role,
-                    CreatedOn = account.CreatedOn,
+                    CreatedOn = DateTime.Now,
                     FullName = account.FullName,
                     FullNameSearch = account.FullNameSearch,
                     DoB = account.DoB,

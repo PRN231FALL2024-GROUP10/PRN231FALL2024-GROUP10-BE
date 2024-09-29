@@ -15,10 +15,6 @@ namespace JobScial.BAL.DTOs.Accounts
 
         public int? Gender { get; set; }
 
-        public int? Role { get; set; }
-
-        public DateTime? CreatedOn { get; set; }
-
         public string? Image { get; set; }
 
         public string? FullName { get; set; }

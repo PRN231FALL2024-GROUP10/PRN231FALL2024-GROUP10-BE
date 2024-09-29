@@ -1,4 +1,4 @@
-﻿using BMOS.BAL.Errors;
+﻿using ProjectParticipantManagement.BAL.Errors;
 using FluentValidation.Results;
 using Newtonsoft.Json;
 using System;
@@ -25,7 +25,7 @@ namespace BMOS.BAL.Helpers
 
             return JsonConvert.SerializeObject(errors);
         }
-        
+
         public static string GetErrorString(string fieldName, string errorStr)
         {
             List<ErrorDetail> errors = new List<ErrorDetail>();

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobScial.DAL.Models;
 
 public partial class Post
 {
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
     public int PostId { get; set; }
 
     public string? Content { get; set; }

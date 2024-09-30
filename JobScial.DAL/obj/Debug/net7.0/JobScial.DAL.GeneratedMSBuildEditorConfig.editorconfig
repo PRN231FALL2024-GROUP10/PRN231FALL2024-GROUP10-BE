@@ -8,4 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = JobScial.DAL
-build_property.ProjectDir = C:\Users\ASUS\Desktop\PRN231FALL2024-GROUP10-BE\JobScial.DAL\
+build_property.ProjectDir = C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.DAL\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

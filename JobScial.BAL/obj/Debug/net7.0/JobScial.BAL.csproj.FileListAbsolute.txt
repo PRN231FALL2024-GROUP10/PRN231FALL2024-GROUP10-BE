@@ -9,3 +9,16 @@ D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net
 D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\refint\JobScial.BAL.dll
 D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.pdb
 D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.BAL\obj\Debug\net7.0\ref\JobScial.BAL.dll
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\bin\Debug\net7.0\JobScial.BAL.deps.json
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\bin\Debug\net7.0\JobScial.BAL.dll
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\bin\Debug\net7.0\JobScial.BAL.pdb
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.csproj.AssemblyReference.cache
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.AssemblyInfoInputs.cache
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.AssemblyInfo.cs
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.csproj.CoreCompileInputs.cache
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.sourcelink.json
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.dll
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\refint\JobScial.BAL.dll
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\JobScial.BAL.pdb
+C:\Users\Acer\Desktop\NetworkSocial\BE\PRN231FALL2024-GROUP10-BE\JobScial.BAL\obj\Debug\net7.0\ref\JobScial.BAL.dll

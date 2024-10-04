@@ -44,9 +44,9 @@ namespace JobScial.DAL.Repositorys.Implementations
                 var loginResponse = new PostLoginResponse();
                 loginResponse.AccountId = account.AccountId;
                 loginResponse.Email = account.Email;
-                loginResponse.Role = 2;
+                loginResponse.Role = account.Role;
+                loginResponse.FullName = account.FullName;
 
-          
 
                 var resultLogin = await GenerateToken(loginResponse, jwtAuth, account);
                 return resultLogin;

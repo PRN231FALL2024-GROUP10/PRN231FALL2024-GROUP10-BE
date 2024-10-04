@@ -2,6 +2,7 @@
 using BMOS.BAL.Helpers;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.JWT;
+using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -15,7 +16,11 @@ namespace JobScial.WebAPI.Controllers
     {
         private IOptions<JwtAuth> _jwtAuthOptions;
         private IAuthenticationRepository _authenticationRepository;
-
+        public AuthenticationsController(IAuthenticationRepository authenticationRepository, IOptions<JwtAuth> jwtAuthOptions)
+        {
+            _authenticationRepository = authenticationRepository;
+            _jwtAuthOptions = jwtAuthOptions;
+        }
 
         #region Login
         [EnableQuery]

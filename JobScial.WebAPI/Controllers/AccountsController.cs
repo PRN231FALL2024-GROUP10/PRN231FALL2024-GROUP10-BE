@@ -24,15 +24,22 @@ namespace JobScial.WebAPI.Controllers
         [EnableQuery]
         public async Task<IActionResult> Post([FromForm] RegisterRequest registerRequest)
         {
-            /*ValidationResult validationResult = await _registerValidator.ValidateAsync(registerRequest);
-            if (!validationResult.IsValid)
+            try
             {
-                string error = ErrorHelper.GetErrorsString(validationResult);
-                throw new BadRequestException(error);
-            }*/
-            GetAccountResponse customer = await this._accountRepository
-                .Register( registerRequest);
-            return Ok();
+                /*ValidationResult validationResult = await _registerValidator.ValidateAsync(registerRequest);
+                if (!validationResult.IsValid)
+                {
+                    string error = ErrorHelper.GetErrorsString(validationResult);
+                    throw new BadRequestException(error);
+                }*/
+                GetAccountResponse customer = await this._accountRepository
+                .Register(registerRequest);
+                return Ok(customer);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
+            }
         }
         #endregion
     }

@@ -9,6 +9,7 @@ namespace JobScial.DAL.Repositorys.Interfaces
 {
     public interface IAccountRepository
     {
+        public Task<AccountProfileDto> GetProfileById(int accountId);
         public Task<GetAccountResponse> Register(RegisterRequest registerRequest);
 
     }

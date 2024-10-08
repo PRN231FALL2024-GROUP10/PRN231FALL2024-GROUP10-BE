@@ -23,6 +23,71 @@ namespace JobScial.DAL.Repositorys.Implementations
 
         }
 
+        public async Task<AccountProfileDto> GetProfileById(int accountId)
+        {
+            // Lấy tài khoản
+            var account = _unitOfWork.AccountDao.FindOne(acc => acc.AccountId == accountId);
+            if (account == null)
+            {
+                throw new Exception($"Account with ID {accountId} not found.");
+            }
+
+            // Chuyển đổi tài khoản sang DTO
+            var accountDto = new AccountDto
+            {
+                AccountId = account.AccountId,
+                Email = account.Email,
+                // Thêm các thuộc tính khác
+            };
+/*
+            // Lấy và chuyển đổi chứng chỉ
+            var certificates = _unitOfWork.AccountCertificateDao.Find(cert => cert.AccountId == accountId)
+                .Select(cert => new AccountCertificateDto
+                {
+                    CertificateName = cert.CertificateName,
+                    // Thêm các thuộc tính khác
+                });
+
+            // Lấy và chuyển đổi thông tin giáo dục
+            var educations = _unitOfWork.AccountEducationDao.Find(edu => edu.AccountId == accountId)
+                .Select(edu => new AccountEducationDto
+                {
+                    EducationId = edu.EducationId,
+                    InstitutionName = edu.InstitutionName,
+                    Degree = edu.Degree,
+                    // Thêm các thuộc tính khác
+                });
+
+            // Lấy và chuyển đổi kinh nghiệm
+            var experiences = _unitOfWork.AccountExperienceDao.Find(exp => exp.AccountId == accountId)
+                .Select(exp => new AccountExperienceDto
+                {
+                    ExperienceId = exp.ExperienceId,
+                    JobTitle = exp.JobTitle,
+                    CompanyName = exp.CompanyName,
+                    // Thêm các thuộc tính khác
+                });
+
+            // Lấy và chuyển đổi kỹ năng
+            var skills = _unitOfWork.AccountSkillDao.Find(skill => skill.AccountId == accountId)
+                .Select(skill => new AccountSkillDto
+                {
+                    SkillId = skill.SkillId,
+                    SkillName = skill.SkillName,
+                    // Thêm các thuộc tính khác
+                });*/
+
+            // Tạo và trả về DTO
+            return new AccountProfileDto
+            {
+                Account = accountDto,
+       /*         Certificates = certificates,
+                Educations = educations,
+                Experiences = experiences,
+                Skills = skills*/
+            };
+        }
+
         #region Register
         public async Task<GetAccountResponse> Register(RegisterRequest registerRequest)
         {
@@ -34,13 +99,6 @@ namespace JobScial.DAL.Repositorys.Implementations
                 {
                     throw new BadRequestException("Email already exist in the system.");
                 }
-
-                /*var customerPhone = await _unitOfWork.CustomerDAO.GetCustomerByPhoneAsync(registerRequest.Phone);
-                if (customerPhone != null)
-                {
-                    throw new BadRequestException("Phone already exist in the system.");
-                }*/
-
                 // assign registerRequest to account
                 Account account = new Account
                 {

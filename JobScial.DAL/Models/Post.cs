@@ -9,7 +9,7 @@ public partial class Post
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int PostId { get; set; }
+    public int PostID { get; set; }
 
     public string? Content { get; set; }
 

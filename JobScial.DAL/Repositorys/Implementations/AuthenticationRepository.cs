@@ -44,9 +44,9 @@ namespace JobScial.DAL.Repositorys.Implementations
                 var loginResponse = new PostLoginResponse();
                 loginResponse.AccountId = account.AccountId;
                 loginResponse.Email = account.Email;
-                loginResponse.Role = account.Role;
+                loginResponse.Role = 2;
                 loginResponse.FullName = account.FullName;
-
+                
 
                 var resultLogin = await GenerateToken(loginResponse, jwtAuth, account);
                 return resultLogin;
@@ -93,9 +93,7 @@ namespace JobScial.DAL.Repositorys.Implementations
                 string accessToken = jwtTokenHandler.WriteToken(token);
 
                 string refreshToken = GenerateRefreshToken();
-                
 
-                await _unitOfWork.CommitAsync();
 
                 response.AccessToken = accessToken;
 

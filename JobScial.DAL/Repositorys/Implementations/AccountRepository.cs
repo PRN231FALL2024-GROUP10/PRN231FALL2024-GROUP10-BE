@@ -99,13 +99,6 @@ namespace JobScial.DAL.Repositorys.Implementations
                 {
                     throw new BadRequestException("Email already exist in the system.");
                 }
-
-                /*var customerPhone = await _unitOfWork.CustomerDAO.GetCustomerByPhoneAsync(registerRequest.Phone);
-                if (customerPhone != null)
-                {
-                    throw new BadRequestException("Phone already exist in the system.");
-                }*/
-
                 // assign registerRequest to account
                 Account account = new Account
                 {

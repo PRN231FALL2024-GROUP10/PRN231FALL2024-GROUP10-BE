@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace JobScial.DAL.Models;
 
@@ -58,9 +59,16 @@ public partial class JobSocialContext : DbContext
     public virtual DbSet<TimespanUnit> TimespanUnits { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);Uid=sa;Pwd=1;Database=jobSocial1;TrustServerCertificate=True");
-
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var builder = new ConfigurationBuilder()
+                              .SetBasePath(Directory.GetCurrentDirectory())
+                              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnectionStringDB"));
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -144,7 +152,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("Comment");
 
             entity.Property(e => e.CommentId)
-                .ValueGeneratedNever()
                 .HasColumnName("CommentID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.Content).HasMaxLength(400);
@@ -163,7 +170,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("Company");
 
             entity.Property(e => e.CompanyId)
-                .ValueGeneratedNever()
                 .HasColumnName("CompanyID");
             entity.Property(e => e.Name).HasMaxLength(400);
         });
@@ -191,7 +197,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("Group");
 
             entity.Property(e => e.GroupId)
-                .ValueGeneratedNever()
                 .HasColumnName("GroupID");
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -230,7 +235,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("GroupRole");
 
             entity.Property(e => e.GroupRoleId)
-                .ValueGeneratedNever()
                 .HasColumnName("GroupRoleID");
             entity.Property(e => e.Name).HasMaxLength(400);
         });
@@ -242,7 +246,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("JobTitle");
 
             entity.Property(e => e.JobId)
-                .ValueGeneratedNever()
                 .HasColumnName("JobID");
             entity.Property(e => e.Name).HasMaxLength(400);
         });
@@ -264,12 +267,11 @@ public partial class JobSocialContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.PostId).HasName("PK__Post__AA126038473CBD71");
+            entity.HasKey(e => e.PostID).HasName("PK__Post__AA126038473CBD71");
 
             entity.ToTable("Post");
 
-            entity.Property(e => e.PostId)
-                .ValueGeneratedNever()
+            entity.Property(e => e.PostID)
                 .HasColumnName("PostID");
             entity.Property(e => e.Content).HasMaxLength(400);
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -297,7 +299,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("PostCategory");
 
             entity.Property(e => e.PostCategoryId)
-                .ValueGeneratedNever()
                 .HasColumnName("PostCategoryID");
             entity.Property(e => e.Name).HasMaxLength(400);
         });
@@ -325,7 +326,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("PostSkill");
 
             entity.Property(e => e.PostId)
-                .ValueGeneratedNever()
                 .HasColumnName("PostID");
             entity.Property(e => e.SkillCategoryId).HasColumnName("SkillCategoryID");
 
@@ -365,7 +365,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("School");
 
             entity.Property(e => e.SchoolId)
-                .ValueGeneratedNever()
                 .HasColumnName("SchoolID");
             entity.Property(e => e.Description).HasMaxLength(400);
             entity.Property(e => e.Name).HasMaxLength(400);
@@ -378,7 +377,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("SkillCategory");
 
             entity.Property(e => e.SkillCategoryId)
-                .ValueGeneratedNever()
                 .HasColumnName("SkillCategoryID");
             entity.Property(e => e.Name).HasMaxLength(400);
         });
@@ -391,7 +389,6 @@ public partial class JobSocialContext : DbContext
             entity.ToTable("TimespanUnit");
 
             entity.Property(e => e.TimespanUnitId)
-                .ValueGeneratedNever()
                 .HasColumnName("TimespanUnitID");
             entity.Property(e => e.Name).HasMaxLength(400);
         });

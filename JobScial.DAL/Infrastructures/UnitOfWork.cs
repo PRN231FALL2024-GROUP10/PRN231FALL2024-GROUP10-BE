@@ -16,7 +16,8 @@ namespace JobScial.DAL.Infrastructures
     {
         private JobSocialContext _dbContext;
         private AccountDAO _accountDAO;
-
+        private PostDAO _postDAO;
+        private CommentDAO _commentDAO;
         private readonly IAccountDao _accountDao;
         private readonly IAccountCertificateDao _accountCertificateDao;
         private readonly IAccountEducationDao _accountEducationDao;
@@ -47,6 +48,28 @@ namespace JobScial.DAL.Infrastructures
                     _accountDAO = new AccountDAO(_dbContext);
                 }
                 return _accountDAO;
+            }
+        }
+        public CommentDAO CommentDAO
+        {
+            get
+            {
+                if (_commentDAO == null)
+                {
+                    _commentDAO = new CommentDAO(_dbContext);
+                }
+                return _commentDAO;
+            }
+        }
+        public PostDAO PostDAO
+        {
+            get
+            {
+                if (_postDAO == null)
+                {
+                    _postDAO = new PostDAO(_dbContext);
+                }
+                return _postDAO;
             }
         }
         public IAccountDao AccountDao => _accountDao;

@@ -1,0 +1,14 @@
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.deps.json
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.pdb
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.AssemblyInfoInputs.cache
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.AssemblyInfo.cs
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.csproj.CoreCompileInputs.cache
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\refint\JobScial.DAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.pdb
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\ref\JobScial.DAL.dll
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.runtimeconfig.json
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.csproj.AssemblyReference.cache
+D:\Demo\FU\Hand-On-Lab\NGUYENTHANHPHU_SE1711_Fall24BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.genruntimeconfig.cache

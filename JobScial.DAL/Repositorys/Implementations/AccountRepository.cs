@@ -127,10 +127,6 @@ namespace JobScial.DAL.Repositorys.Implementations
             return new AccountProfileDto
             {
                 Account = accountDto,
-       /*         Certificates = certificates,
-                Educations = educations,
-                Experiences = experiences,
-                Skills = skills*/
             };
         }
 
@@ -205,5 +201,19 @@ namespace JobScial.DAL.Repositorys.Implementations
             }
         }
         #endregion
+
+        public void DeleteAccount(int accountId)
+        {
+            var account = _unitOfWork.AccountDao.FindOne(a => a.AccountId == accountId);
+
+            if (account == null)
+            {
+                throw new Exception($"Account with ID {accountId} not found.");
+            }
+
+            _unitOfWork.AccountDao.Delete(account);
+
+            _unitOfWork.Commit();
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BMOS.BAL.Helpers;
+﻿using BMOS.BAL.Helpers;
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Comments;
 using JobScial.DAL.Infrastructures;

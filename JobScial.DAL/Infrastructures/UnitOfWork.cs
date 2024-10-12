@@ -1,4 +1,5 @@
-﻿using JobScial.DAL.DAOs;
+﻿using JobScial.BAL.DTOs.Accounts;
+using JobScial.DAL.DAOs;
 using JobScial.DAL.DAOs.Implements;
 using JobScial.DAL.DAOs.Interfaces;
 using JobScial.DAL.Models;
@@ -18,27 +19,24 @@ namespace JobScial.DAL.Infrastructures
         private AccountDAO _accountDAO;
         private PostDAO _postDAO;
         private CommentDAO _commentDAO;
-        private readonly IAccountDao _accountDao;
-        private readonly IAccountCertificateDao _accountCertificateDao;
-        private readonly IAccountEducationDao _accountEducationDao;
-        private readonly IAccountExperienceDao _accountExperienceDao;
-        private readonly IAccountSkillDao _accountSkillDao;
+        private AccountDao _accountDao;
 
-        public UnitOfWork(IDbFactory dbFactory,
-                          IAccountDao accountDao,
-                          IAccountCertificateDao accountCertificateDao,
-                          IAccountEducationDao accountEducationDao,
-                          IAccountExperienceDao accountExperienceDao,
-                          IAccountSkillDao accountSkillDao)
+        public UnitOfWork(IDbFactory dbFactory)
         {
             _dbContext = dbFactory.InitDbContext();
-            _accountDao = accountDao;
-            _accountCertificateDao = accountCertificateDao;
-            _accountEducationDao = accountEducationDao;
-            _accountExperienceDao = accountExperienceDao;
-            _accountSkillDao = accountSkillDao;
         }
 
+        public AccountDao AccountDao
+        {
+            get
+            {
+                if (_accountDao == null)
+                {
+                    _accountDao = new AccountDao(_dbContext);
+                }
+                return _accountDao;
+            }
+        }
         public AccountDAO AccountDAO
         {
             get
@@ -72,11 +70,7 @@ namespace JobScial.DAL.Infrastructures
                 return _postDAO;
             }
         }
-        public IAccountDao AccountDao => _accountDao;
-        public IAccountCertificateDao AccountCertificateDao => _accountCertificateDao;
-        public IAccountEducationDao AccountEducationDao => _accountEducationDao;
-        public IAccountExperienceDao AccountExperienceDao => _accountExperienceDao;
-        public IAccountSkillDao AccountSkillDao => _accountSkillDao;
+
 
         public void Commit()
         {

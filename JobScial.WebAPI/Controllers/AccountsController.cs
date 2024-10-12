@@ -16,30 +16,11 @@ namespace JobScial.WebAPI.Controllers
     {
         //private IValidator<RegisterRequest> _registerValidator;
         private IAccountRepository _accountRepository;
-        private readonly IUnitOfWork unitOfWork;
 
         public AccountsController(IAccountRepository accountRepository, IUnitOfWork unitOfWork)
         {
             _accountRepository = accountRepository;
-            this.unitOfWork = unitOfWork;
         }
-
-        [EnableQuery(PageSize = 2)]
-        public IActionResult Get()
-        {
-            return Ok(unitOfWork.AccountDao.GetAll());
-        }
-
-        public IActionResult Get([FromRoute] int key)
-        {
-            var e = unitOfWork.AccountDao.FindOne(p => p.AccountId == key);
-            if (e == null)
-            {
-                return NotFound();
-            }
-            return Ok(e);
-        }
-
 
         #region Register
         [HttpPost("Register")]

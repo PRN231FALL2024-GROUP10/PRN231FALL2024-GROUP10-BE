@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<ODataQueryOptionsOperationFilter>();
 });
 builder.Services.AddDbContext<JobSocialContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionStringDB")));
 
 
 //Dependency Injections
@@ -107,14 +107,6 @@ new OpenApiSecurityRequirement()
                 });
 });
 
-
-
-builder.Services.AddScoped(typeof(IDao<>), typeof(Dao<>));
-builder.Services.AddScoped<IAccountDao, AccountDao>();
-builder.Services.AddScoped<IAccountCertificateDao, AccountCertificateDao>();
-builder.Services.AddScoped<IAccountEducationDao, AccountEducationDao>();
-builder.Services.AddScoped<IAccountExperienceDao, AccountExperienceDao>();
-builder.Services.AddScoped<IAccountSkillDao, AccountSkillDao>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

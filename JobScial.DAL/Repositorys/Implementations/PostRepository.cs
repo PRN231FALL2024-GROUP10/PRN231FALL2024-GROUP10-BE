@@ -1,5 +1,4 @@
 ﻿using JobScial.DAL.Infrastructures;
-using AutoMapper;
 using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

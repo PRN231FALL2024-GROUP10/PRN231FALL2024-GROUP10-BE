@@ -1,8 +1,6 @@
 ﻿using BMOS.BAL.Exceptions;
-using BMOS.BAL.Helpers;
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
-using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
 using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;

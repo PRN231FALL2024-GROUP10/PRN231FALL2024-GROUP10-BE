@@ -38,5 +38,6 @@ namespace JobScial.DAL.DAOs.Interfaces
     public interface IAccountSkillDao : IDao<AccountSkill>
     {
         // Additional methods specific to AccountSkill can be declared here
+        IEnumerable<AccountSkill> GetSkillsByAccountId(int accountId);
     }
 }

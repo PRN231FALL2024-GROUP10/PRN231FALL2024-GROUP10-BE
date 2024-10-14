@@ -54,8 +54,44 @@ namespace JobScial.DAL.Repositorys.Implementations
                     HasPhoto  = post.HasPhoto,
 
                 };
-
+                List<PostPhotos> postPhotosToSave = new List<PostPhotos>();
                 await _unitOfWork.PostDAO.AddNewPost(post1);
+
+                // Xử lý nếu có ảnh
+                if (post.HasPhoto == true && post.Link != null && post.Link.Any())
+                {
+                    int index = 0;
+                    foreach (var imageFile in post.Link)
+                    {
+
+                        // Lặp qua từng file trong danh sách file ảnh
+
+                        // Lưu file và tạo đối tượng PostPhoto
+                        var photo = new PostPhotos
+                        {
+                            PostId = post1.PostID,
+                            Link = await SaveFile(imageFile),  // Lưu file và lấy đường dẫn
+                            Caption = "", // Chú thích cho ảnh
+                            Index = index++, // Chỉ số của ảnh
+                            Post = post1             // Liên kết PostPhoto với Post
+
+                            };
+
+                            // Thêm ảnh vào danh sách PostPhotos của bài post
+                            post1.PostPhotos.Add(photo);
+                            postPhotosToSave.Add(photo);
+                        
+                    }
+                }
+
+                // Lưu danh sách ảnh sau
+                if (postPhotosToSave.Any())
+                {
+                    foreach (var postPhoto in postPhotosToSave)
+                    {
+                        await _unitOfWork.PostPhotoDAO.AddNewPostPhoto(postPhoto);  // Lưu từng PostPhoto
+                    }
+                }
                 await _unitOfWork.CommitAsync();
 
                 commonResponse.Data = post1;
@@ -66,10 +102,37 @@ namespace JobScial.DAL.Repositorys.Implementations
             catch (Exception ex)
             {
                 commonResponse.Message = ex.Message;
-                commonResponse.Status = 405;
+                commonResponse.Status = 500; // Internal Server Error
             }
             return commonResponse;
 
+        }
+        // Phương thức lưu file và trả về đường dẫn
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            // Đường dẫn tới thư mục Uploads
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+            // Kiểm tra và tạo thư mục nếu chưa tồn tại
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            // Tạo tên file duy nhất cho file tải lên
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+
+            // Đường dẫn đầy đủ để lưu file
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            // Lưu file vào thư mục
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Trả về đường dẫn tương đối hoặc đường dẫn đầy đủ
+            return $"/Uploads/{fileName}";
         }
 
         public async Task<CommonResponse> UpdatePostAsync(CreatePostRequest post, HttpContext httpContext , int id)

@@ -124,6 +124,11 @@ public partial class JobSocialContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(400);
             entity.Property(e => e.JobTitle).HasMaxLength(400);
 
+            entity.HasOne(e => e.Company)
+                    .WithMany() // Giả sử Company không có navigation property đến AccountExperience
+                    .HasForeignKey(e => e.CompanyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(d => d.TimespanUnitNavigation).WithMany(p => p.AccountExperiences)
                 .HasForeignKey(d => d.TimespanUnit)
                 .HasConstraintName("FK__AccountEx__Times__628FA481");

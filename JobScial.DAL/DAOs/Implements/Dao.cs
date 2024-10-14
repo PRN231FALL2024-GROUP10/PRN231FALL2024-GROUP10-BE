@@ -47,7 +47,7 @@ namespace JobScial.DAL.DAOs.Implements
 
     public class Dao<TEntity> : IDao<TEntity> where TEntity : class
     {
-        private readonly JobSocialContext _context;
+        protected readonly JobSocialContext _context;
         public Dao(JobSocialContext context)
         {
             _context = context;

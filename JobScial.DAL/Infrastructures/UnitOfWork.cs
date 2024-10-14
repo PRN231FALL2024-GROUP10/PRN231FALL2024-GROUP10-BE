@@ -20,10 +20,58 @@ namespace JobScial.DAL.Infrastructures
         private PostDAO _postDAO;
         private CommentDAO _commentDAO;
         private AccountDao _accountDao;
-
+        private AccountCertificateDao _accountCertificateDao;
+        private AccountSkillDao _accountSkillDao;
+        private AccountEducationDao _accountEducationDao;
+        private AccountExperienceDao _accountExperienceDao;
         public UnitOfWork(IDbFactory dbFactory)
         {
             _dbContext = dbFactory.InitDbContext();
+        }
+        public AccountExperienceDao AccountExperienceDao
+        {
+            get
+            {
+                if (_accountExperienceDao == null)
+                {
+                    _accountExperienceDao = new AccountExperienceDao(_dbContext);
+                }
+                return _accountExperienceDao;
+            }
+        }
+        public AccountEducationDao AccountEducationDao
+        {
+            get
+            {
+                if (_accountEducationDao == null)
+                {
+                    _accountEducationDao = new AccountEducationDao(_dbContext);
+                }
+                return _accountEducationDao;
+            }
+        }
+        public AccountSkillDao AccountSkillDao
+        {
+            get
+            {
+                if (_accountSkillDao == null)
+                {
+                    _accountSkillDao = new AccountSkillDao(_dbContext);
+                }
+                return _accountSkillDao;
+            }
+        }
+
+        public AccountCertificateDao AccountCertificateDao
+        {
+            get
+            {
+                if (_accountCertificateDao == null)
+                {
+                    _accountCertificateDao = new AccountCertificateDao(_dbContext);
+                }
+                return _accountCertificateDao;
+            }
         }
 
         public AccountDao AccountDao

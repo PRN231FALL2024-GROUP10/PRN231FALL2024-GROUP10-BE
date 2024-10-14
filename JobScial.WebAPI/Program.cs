@@ -127,8 +127,22 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()  // Cho phép tất cả các origin
+               .AllowAnyMethod()  // Cho phép tất cả các phương thức (GET, POST, PUT, DELETE, ...)
+               .AllowAnyHeader(); // Cho phép tất cả các header
+    });
+});
+
+
 #endregion
 var app = builder.Build();
+
+app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

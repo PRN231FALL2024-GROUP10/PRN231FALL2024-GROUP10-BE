@@ -39,9 +39,33 @@ namespace JobScial.DAL.DAOs.Implements
             return _context.AccountSkills.Where(skill => skill.AccountId == accountId).ToList();
         }
     }
-    public class PostCategoryDao : Dao<PostCategory>, IPostCategorySkillDao
+    public class PostCategoryDao : Dao<PostCategory>, IPostCategoryDao
     {
         public PostCategoryDao(JobSocialContext context) : base(context) { }
+
+    }
+
+    public class CompanyDao : Dao<Company>, ICompanyDao
+    {
+        public CompanyDao(JobSocialContext context) : base(context) { }
+
+    }
+
+    public class JobTitleDao : Dao<JobTitle>, IJobTitleDao
+    {
+        public JobTitleDao(JobSocialContext context) : base(context) { }
+
+    }
+
+    public class SkillDao : Dao<SkillCategory>, ISkillDao
+    {
+        public SkillDao(JobSocialContext context) : base(context) { }
+
+    }
+
+    public class TimeSpanUnitDao : Dao<TimespanUnit>, ITimeSpanUnitDao
+    {
+        public TimeSpanUnitDao(JobSocialContext context) : base(context) { }
 
     }
 

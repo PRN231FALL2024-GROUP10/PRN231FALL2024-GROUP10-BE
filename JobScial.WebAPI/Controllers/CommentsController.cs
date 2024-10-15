@@ -22,7 +22,7 @@ namespace JobScial.WebAPI.Controllers
         [HttpPost("odata/Comment/AddNewComment")]
         [EnableQuery]
         //[PermissionAuthorize("Staff")]
-        public async Task<IActionResult> Post([FromForm] CreateCommentRequest createCommentRequest)
+        public async Task<IActionResult> Post([FromBody] CreateCommentRequest createCommentRequest)
         {
             CommonResponse commonResponse = new CommonResponse();
             try

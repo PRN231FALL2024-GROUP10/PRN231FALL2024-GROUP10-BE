@@ -66,3 +66,4 @@ node_modules/
 /JobScial.WebAPI/obj/Debug/net7.0/JobScial.WebAPI.assets.cache
 /.vs/PRN231FALL2024-GROUP10-BE-NEW/v17
 /.gitignore
+/JobScial.WebAPI/.vs/JobScial.WebAPI/v17/.suo

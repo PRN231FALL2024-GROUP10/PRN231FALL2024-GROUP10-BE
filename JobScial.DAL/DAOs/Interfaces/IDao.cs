@@ -35,7 +35,23 @@ namespace JobScial.DAL.DAOs.Interfaces
     {
         IEnumerable<AccountSkill> GetSkillsByAccountId(int accountId);
     }
-    public interface IPostCategorySkillDao : IDao<PostCategory>
+    public interface IPostCategoryDao : IDao<PostCategory>
+    {
+    }
+
+    public interface ICompanyDao : IDao<Company>
+    {
+    }
+
+    public interface IJobTitleDao : IDao<JobTitle>
+    {
+    }
+
+    public interface ISkillDao : IDao<SkillCategory>
+    {
+    }
+
+    public interface ITimeSpanUnitDao : IDao<TimespanUnit>
     {
     }
 }

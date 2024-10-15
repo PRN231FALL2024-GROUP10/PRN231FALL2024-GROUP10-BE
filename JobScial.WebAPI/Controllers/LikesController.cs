@@ -15,12 +15,12 @@ namespace JobScial.WebAPI.Controllers
 
         public LikesController(IlikeRepository likeRepository)
         {
-            likeRepository = likeRepository;
+            _likeRepository = likeRepository;
         }
 
         [HttpPost("odata/Like/AddNewLike")]
         [EnableQuery]
-        public async Task<IActionResult> Post([FromForm] CreateLike createLike)
+        public async Task<IActionResult> Post([FromBody] CreateLike createLike)
         {
             CommonResponse commonResponse = new CommonResponse();
             try
@@ -29,7 +29,7 @@ namespace JobScial.WebAPI.Controllers
                 switch (commonResponse.Status)
                 {
                     case 200:
-                        return StatusCode(200, "Add Comment Success");
+                        return StatusCode(200, "Add Like Success");
                     //return Ok(commonResponse);
                     case 405:
                         return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");

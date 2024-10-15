@@ -1,5 +1,6 @@
 ﻿using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
+using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -16,7 +17,7 @@ namespace JobScial.DAL.Repositorys.Interfaces
         Task<CommonResponse> AddPostAsync(CreatePostRequest post, HttpContext httpContext);
 
         // Sửa bài viết
-        Task<CommonResponse> UpdatePostAsync(CreatePostRequest post, HttpContext httpContext, int id);
+        Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, HttpContext httpContext, int id);
 
         // Xóa bài viết theo id
         Task DeletePostAsync(int postId);

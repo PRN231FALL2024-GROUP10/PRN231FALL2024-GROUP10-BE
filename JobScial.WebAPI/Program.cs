@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+
 using System.Reflection.Emit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IlikeRepository, LikeRepository>();
 #region JWT 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -129,6 +131,8 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

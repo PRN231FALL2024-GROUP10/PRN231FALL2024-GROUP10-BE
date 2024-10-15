@@ -33,9 +33,27 @@ namespace JobScial.DAL.Repositorys.Implementations
             try
             {
                 JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
-                string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+                var emailClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email);
+
+                if (emailClaim == null)
+                {
+                    throw new Exception("User email claim not found.");
+                }
+
+                string emailFromClaim = emailClaim.Value;
                 var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
 
+                if (accountStaff == null)
+                {
+                    throw new Exception("User not found.");
+                }
+
+                var post = await _unitOfWork.PostDAO.GetPostById(comment.PostId);
+
+                if (post == null)
+                {
+                    throw new Exception("Post not found.");
+                }
                 Comment comment1 = new Comment
                 {
                     Content = comment.Content,

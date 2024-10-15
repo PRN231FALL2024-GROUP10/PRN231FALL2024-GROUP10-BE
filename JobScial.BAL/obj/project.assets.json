@@ -878,5 +878,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Code\\PRN231FALL2024-GROUP10-BE\\JobScial.BAL\\obj\\project.nuget.cache : Unexpected character encountered while parsing value: <. Path 'expectedPackageFiles[21]', line 29, position 0."
+    }
+  ]
 }

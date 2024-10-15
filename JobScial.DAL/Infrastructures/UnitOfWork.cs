@@ -20,6 +20,9 @@ namespace JobScial.DAL.Infrastructures
         private PostDAO _postDAO;
         private CommentDAO _commentDAO;
         private AccountDao _accountDao;
+        private LikeDAO _likeDAO;
+        private PostPhotoDAO _postPhotoDAO;
+
         private AccountCertificateDao _accountCertificateDao;
         private AccountSkillDao _accountSkillDao;
         private AccountEducationDao _accountEducationDao;
@@ -85,6 +88,17 @@ namespace JobScial.DAL.Infrastructures
                 return _accountDao;
             }
         }
+        public PostPhotoDAO PostPhotoDAO
+        {
+            get
+            {
+                if (_postPhotoDAO == null)
+                {
+                    _postPhotoDAO = new PostPhotoDAO(_dbContext);
+                }
+                return _postPhotoDAO;
+            }
+        }
         public AccountDAO AccountDAO
         {
             get
@@ -118,7 +132,17 @@ namespace JobScial.DAL.Infrastructures
                 return _postDAO;
             }
         }
-
+        public LikeDAO likeDAO
+        {
+            get
+            {
+                if (_likeDAO == null)
+                {
+                    _likeDAO = new LikeDAO(_dbContext);
+                }
+                return _likeDAO;
+            }
+        }
 
         public void Commit()
         {

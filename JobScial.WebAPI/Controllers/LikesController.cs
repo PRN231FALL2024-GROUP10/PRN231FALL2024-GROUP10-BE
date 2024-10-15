@@ -1,8 +1,7 @@
 ﻿using BMOS.BAL.Exceptions;
 using GenZStyleAPP.BAL.Errors;
-using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Comments;
-using JobScial.DAL.Repositorys.Implementations;
+using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -10,28 +9,27 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace JobScial.WebAPI.Controllers
 {
-    public class CommentsController : ODataController
+    public class LikesController : ODataController
     {
-        private readonly ICommentRepository _commentRepository;
+        private readonly IlikeRepository _likeRepository;
 
-        public CommentsController(ICommentRepository commentRepository)
+        public LikesController(IlikeRepository likeRepository)
         {
-            _commentRepository = commentRepository;
+            _likeRepository = likeRepository;
         }
 
-        [HttpPost("odata/Comment/AddNewComment")]
+        [HttpPost("odata/Like/AddNewLike")]
         [EnableQuery]
-        //[PermissionAuthorize("Staff")]
-        public async Task<IActionResult> Post([FromBody] CreateCommentRequest createCommentRequest)
+        public async Task<IActionResult> Post([FromBody] CreateLike createLike)
         {
             CommonResponse commonResponse = new CommonResponse();
             try
             {
-                commonResponse = await this._commentRepository.AddCommentAsync(createCommentRequest, HttpContext);
+                commonResponse = await this._likeRepository.AddLikeAsync(createLike, HttpContext);
                 switch (commonResponse.Status)
                 {
                     case 200:
-                        return StatusCode(200, "Add Comment Success");
+                        return StatusCode(200, "Add Like Success");
                     //return Ok(commonResponse);
                     case 405:
                         return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
@@ -44,7 +42,6 @@ namespace JobScial.WebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

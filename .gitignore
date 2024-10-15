@@ -48,8 +48,8 @@ node_modules/
 .idea/
 .vs/
 .vscode/
-bin/
-obj/
+*/bin/
+*/obj/
 
 *.code-workspace
 *.suo

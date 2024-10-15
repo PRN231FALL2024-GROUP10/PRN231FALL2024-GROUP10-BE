@@ -22,8 +22,8 @@ namespace JobScial.WebAPI.Controllers
             _accountRepository = accountRepository;
         }
         #region Delete Account
+
         [HttpDelete("{accountId}")]
-        [EnableQuery]
         public async Task<IActionResult> DeleteAccount([FromRoute] int accountId)
         {
             try
@@ -40,7 +40,6 @@ namespace JobScial.WebAPI.Controllers
         #endregion
         #region Register
         [HttpPost("Register")]
-        [EnableQuery]
         public async Task<IActionResult> Post([FromForm] RegisterRequest registerRequest)
         {
             try

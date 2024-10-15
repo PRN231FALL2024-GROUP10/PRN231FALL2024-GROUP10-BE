@@ -19,8 +19,7 @@ namespace JobScial.WebAPI.Controllers
             _commentRepository = commentRepository;
         }
 
-        [HttpPost("odata/Comment/AddNewComment")]
-        [EnableQuery]
+        [HttpPost("Comment/AddNewComment")]
         //[PermissionAuthorize("Staff")]
         public async Task<IActionResult> Post([FromBody] CreateCommentRequest createCommentRequest)
         {

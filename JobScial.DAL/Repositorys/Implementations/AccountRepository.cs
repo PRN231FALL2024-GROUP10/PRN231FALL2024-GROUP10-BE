@@ -2,9 +2,11 @@
 using BMOS.BAL.Helpers;
 using BMOS.DAL.Enums;
 using JobScial.BAL.DTOs.Accounts;
+using JobScial.BAL.DTOs.Profile;
 using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
 using JobScial.DAL.Repositorys.Interfaces;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,50 @@ namespace JobScial.DAL.Repositorys.Implementations
 
         }
 
+        public async Task<AccountProfileDto> UpdateProfile(string email, UpdateProfileDto profile)
+        {
+            var account = _unitOfWork.AccountDao.FindOne(o=>o.Email == email);
+
+            if (account == null)
+            {
+                throw new Exception($"Account with Email {email} not found.");
+            }
+            account.FullName = profile.FullName;
+
+
+            _unitOfWork.Commit();
+
+            var accountDto = new AccountDto
+            {
+                AccountId = account.AccountId,
+                Email = account.Email,
+                FullName = account.FullName
+            };
+            return new AccountProfileDto
+            {
+                Account = accountDto
+            };
+        }
+        public async Task<AccountProfileDto> GetProfileByEmail(string email)
+        {
+            var account = _unitOfWork.AccountDao.FindOne(acc => acc.Email == email);
+            if (account == null)
+            {
+                throw new Exception($"Account with Email {email} not found.");
+            }
+
+            var accountDto = new AccountDto
+            {
+                AccountId = account.AccountId,
+                Email = account.Email,
+                FullName = account.FullName
+            };
+            return new AccountProfileDto
+            {
+                Account = accountDto
+            };
+        }
+
         public async Task<AccountProfileDto> GetProfileById(int accountId)
         {
             // Lấy tài khoản
@@ -37,7 +83,7 @@ namespace JobScial.DAL.Repositorys.Implementations
             {
                 AccountId = account.AccountId,
                 Email = account.Email,
-                // Thêm các thuộc tính khác
+                FullName = account.FullName
             };
 /*
             // Lấy và chuyển đổi chứng chỉ

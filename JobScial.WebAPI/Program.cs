@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+
 using System.Reflection.Emit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +40,7 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<ODataQueryOptionsOperationFilter>();
 });
 builder.Services.AddDbContext<JobSocialContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionStringDB")));
 
 
 //Dependency Injections
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IlikeRepository, LikeRepository>();
 #region JWT 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -107,14 +109,6 @@ new OpenApiSecurityRequirement()
                 });
 });
 
-
-
-builder.Services.AddScoped(typeof(IDao<>), typeof(Dao<>));
-builder.Services.AddScoped<IAccountDao, AccountDao>();
-builder.Services.AddScoped<IAccountCertificateDao, AccountCertificateDao>();
-builder.Services.AddScoped<IAccountEducationDao, AccountEducationDao>();
-builder.Services.AddScoped<IAccountExperienceDao, AccountExperienceDao>();
-builder.Services.AddScoped<IAccountSkillDao, AccountSkillDao>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -137,6 +131,8 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

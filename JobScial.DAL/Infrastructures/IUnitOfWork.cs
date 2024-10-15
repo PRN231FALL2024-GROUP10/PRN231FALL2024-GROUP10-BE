@@ -11,11 +11,6 @@ namespace JobScial.DAL.Infrastructures
 {
     public interface IUnitOfWork
     {
-        IAccountDao AccountDao { get; }
-        IAccountCertificateDao AccountCertificateDao { get; }
-        IAccountEducationDao AccountEducationDao { get; }
-        IAccountExperienceDao AccountExperienceDao { get; }
-        IAccountSkillDao AccountSkillDao { get; }
         public void Commit();
         public Task CommitAsync();
     }

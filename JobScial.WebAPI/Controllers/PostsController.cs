@@ -1,8 +1,7 @@
 ﻿using BMOS.BAL.Exceptions;
-using BMOS.BAL.Helpers;
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
-using JobScial.DAL.Infrastructures;
+using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
 using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,45 +13,55 @@ namespace JobScial.WebAPI.Controllers
     public class PostsController : ODataController
     {
         private IPostRepository _postRepository;
+        private readonly ILogger<PostsController> _logger;
 
 
-        public PostsController(IPostRepository postRepository)
+        public PostsController(IPostRepository postRepository, ILogger<PostsController> logger)
         {
             _postRepository = postRepository;
+            _logger = logger;
         }
 
 
         [HttpPost("odata/Post/AddNewPost")]
-        [EnableQuery]
         //[PermissionAuthorize("Staff")]
         public async Task<IActionResult> Post([FromForm] CreatePostRequest createPostRequest)
         {
             CommonResponse commonResponse = new CommonResponse();
             try
             {
+                // Ghi nhận thông tin
                 /*var resultValid = await _postValidator.ValidateAsync(addPostRequest);
                 if (!resultValid.IsValid)
                 {
                     string error = ErrorHelper.GetErrorsString(resultValid);
                     throw new BadRequestException(error);
                 }*/
+                // Kiểm tra xem có dữ liệu trong createPostRequest không
+
                 commonResponse = await this._postRepository.AddPostAsync(createPostRequest, HttpContext);
                 switch (commonResponse.Status)
                 {
                     case 200:
                         return StatusCode(200, "Add Post Success");
                     //return Ok(commonResponse);
-                    case 405:
-                        return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
 
                     default:
                         return StatusCode(500, commonResponse);
                 }
+
             }
+
             catch (BadRequestException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex) // Xử lý các exception không mong muốn khác
+            {
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
+            return Ok(); // Trả về phản hồi
+
         }
         [HttpGet("odata/Posts/Active/Post")]
         [EnableQuery]
@@ -68,7 +77,7 @@ namespace JobScial.WebAPI.Controllers
         [HttpPut("Post/{key}/UpdatePost")]
         [EnableQuery]
         //[PermissionAuthorize("Customer", "Store Owner")]
-        public async Task<IActionResult> Put([FromRoute] int key, [FromForm] CreatePostRequest updatePostRequest)
+        public async Task<IActionResult> Put([FromRoute] int key, [FromForm] UpdatePostRequest updatePostRequest)
         {
             CommonResponse commonResponse = new CommonResponse();
 
@@ -84,9 +93,7 @@ namespace JobScial.WebAPI.Controllers
                         return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
                     default:
                         return StatusCode(500, commonResponse);
-
                 }
-
             }
             catch (Exception ex)
             {

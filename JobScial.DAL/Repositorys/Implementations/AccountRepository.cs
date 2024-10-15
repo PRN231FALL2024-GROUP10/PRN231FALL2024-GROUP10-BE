@@ -6,6 +6,7 @@ using JobScial.BAL.DTOs.Profile;
 using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
 using JobScial.DAL.Repositorys.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -24,30 +25,146 @@ namespace JobScial.DAL.Repositorys.Implementations
             _unitOfWork = (UnitOfWork)unitOfWork;
 
         }
+        private List<AccountCertificateDto> GetAccountCertificate(Account account)
+        {
+            var certificates = _unitOfWork.AccountCertificateDao.Find(cert => cert.AccountId == account.AccountId)
+           .Select(cert => new AccountCertificateDto
+           {
+               Index = cert.Index,
+               Link = cert.Link,
+           }).ToList();
+            return certificates;
+        }
+        private List<AccountSkillDto> GetAccountSkill(Account account)
+        {
+            var skills = _unitOfWork.AccountSkillDao.Find(skill => skill.AccountId == account.AccountId)
+            .Select(skill => new AccountSkillDto
+            {
+                AccountId = skill.AccountId,
+                SkillCategoryId = skill.SkillCategoryId,
+                SkillLevel = skill.SkillLevel,
+                Timespan = skill.Timespan,
+                TimespanUnit = skill.TimespanUnit,
+                Description = skill.Description,
+            }).ToList();
 
+            return skills;
+        }
+        private List<AccountEducationDto> GetAccountEducation(Account account)
+        {
+            var educations = _unitOfWork.AccountEducationDao
+                .Find(edu => edu.AccountId == account.AccountId)
+                .Include(e => e.School)
+                .Select(edu => new AccountEducationDto
+                {
+                    AccountId = edu.AccountId,
+                    SchoolId = edu.SchoolId,
+                    YearStart = edu.YearStart,
+                    Timespan = edu.Timespan,
+                    TimespanUnit = edu.TimespanUnit,
+                    Description = edu.Description,
+                    SchoolName = edu.School.Name
+                }).ToList();
+
+            return educations;
+        }
+        private List<AccountExperienceDto> GetAccountExperience(Account account)
+        {
+            var experiences = _unitOfWork.AccountExperienceDao.Find(exp => exp.AccountId == account.AccountId)
+                .Include(e => e.TimespanUnitNavigation)
+                .Include(e => e.Company) 
+                .Select(exp => new AccountExperienceDto
+                {
+                    AccountId = exp.AccountId,
+                    CompanyId = exp.CompanyId,
+                    YearStart = exp.YearStart,
+                    JobTitle = exp.JobTitle,
+                    Timespan = exp.Timespan,
+                    TimespanUnit = exp.TimespanUnit,
+                    Description = exp.Description,
+                    TimespanUnitName = exp.TimespanUnitNavigation != null ? exp.TimespanUnitNavigation.Name : null,
+                    CompanyName = exp.Company != null ? exp.Company.Name : null
+                }).ToList();
+
+            return experiences;
+        }
         public async Task<AccountProfileDto> UpdateProfile(string email, UpdateProfileDto profile)
         {
-            var account = _unitOfWork.AccountDao.FindOne(o=>o.Email == email);
+            var account = _unitOfWork.AccountDao.FindOne(o => o.Email == email);
 
             if (account == null)
             {
                 throw new Exception($"Account with Email {email} not found.");
             }
-            account.FullName = profile.FullName;
 
+            // Update Account Details
+            account.FullName = profile.Account.FullName;
+/*            account.Image = profile.Account.Image;
+            account.DoB = profile.Account.DoB;
+            account.Gender = profile.Account.Gender;*/
 
-            _unitOfWork.Commit();
-
-            var accountDto = new AccountDto
+            // Update Certificates
+            _unitOfWork.AccountCertificateDao.DeleteMany(cert => cert.AccountId == account.AccountId);
+            foreach (var cert in profile.Certificates)
             {
-                AccountId = account.AccountId,
-                Email = account.Email,
-                FullName = account.FullName
-            };
-            return new AccountProfileDto
+                _unitOfWork.AccountCertificateDao.Add(new AccountCertificate
+                {
+                    AccountId = account.AccountId,
+                    Index = cert.Index,
+                    Link = cert.Link
+                });
+            }
+
+            // Update Skills
+            _unitOfWork.AccountSkillDao.DeleteMany(skill => skill.AccountId == account.AccountId);
+            foreach (var skill in profile.Skills)
             {
-                Account = accountDto
-            };
+                _unitOfWork.AccountSkillDao.Add(new AccountSkill
+                {
+                    AccountId = account.AccountId,
+                    SkillCategoryId = skill.SkillCategoryId,
+                    SkillLevel = skill.SkillLevel,
+                    Timespan = skill.Timespan,
+                    TimespanUnit = skill.TimespanUnit,
+                    Description = skill.Description
+                });
+            }
+
+            // Update Educations
+            _unitOfWork.AccountEducationDao.DeleteMany(edu => edu.AccountId == account.AccountId);
+            foreach (var edu in profile.Educations)
+            {
+                _unitOfWork.AccountEducationDao.Add(new AccountEducation
+                {
+                    AccountId = account.AccountId,
+                    SchoolId = edu.SchoolId,
+                    YearStart = edu.YearStart,
+                    Timespan = edu.Timespan,
+                    TimespanUnit = edu.TimespanUnit,
+                    Description = edu.Description
+                });
+            }
+
+            // Update Experiences
+            _unitOfWork.AccountExperienceDao.DeleteMany(exp => exp.AccountId == account.AccountId);
+            foreach (var exp in profile.Experiences)
+            {
+                _unitOfWork.AccountExperienceDao.Add(new AccountExperience
+                {
+                    AccountId = account.AccountId,
+                    CompanyId = exp.CompanyId,
+                    YearStart = exp.YearStart,
+                    JobTitle = exp.JobTitle,
+                    Timespan = exp.Timespan,
+                    TimespanUnit = exp.TimespanUnit,
+                    Description = exp.Description
+                });
+            }
+
+            // Commit the transaction
+            await _unitOfWork.CommitAsync();
+
+            return await GetProfileByEmail(email);
         }
         public async Task<AccountProfileDto> GetProfileByEmail(string email)
         {
@@ -61,11 +178,17 @@ namespace JobScial.DAL.Repositorys.Implementations
             {
                 AccountId = account.AccountId,
                 Email = account.Email,
-                FullName = account.FullName
+                FullName = account.FullName,
             };
+
+
             return new AccountProfileDto
             {
-                Account = accountDto
+                Account = accountDto,
+                Certificates = GetAccountCertificate(account),
+                Skills = GetAccountSkill(account),
+                Educations = GetAccountEducation(account),
+                Experiences = GetAccountExperience(account)
             };
         }
 
@@ -85,52 +208,15 @@ namespace JobScial.DAL.Repositorys.Implementations
                 Email = account.Email,
                 FullName = account.FullName
             };
-/*
-            // Lấy và chuyển đổi chứng chỉ
-            var certificates = _unitOfWork.AccountCertificateDao.Find(cert => cert.AccountId == accountId)
-                .Select(cert => new AccountCertificateDto
-                {
-                    CertificateName = cert.CertificateName,
-                    // Thêm các thuộc tính khác
-                });
-
-            // Lấy và chuyển đổi thông tin giáo dục
-            var educations = _unitOfWork.AccountEducationDao.Find(edu => edu.AccountId == accountId)
-                .Select(edu => new AccountEducationDto
-                {
-                    EducationId = edu.EducationId,
-                    InstitutionName = edu.InstitutionName,
-                    Degree = edu.Degree,
-                    // Thêm các thuộc tính khác
-                });
-
-            // Lấy và chuyển đổi kinh nghiệm
-            var experiences = _unitOfWork.AccountExperienceDao.Find(exp => exp.AccountId == accountId)
-                .Select(exp => new AccountExperienceDto
-                {
-                    ExperienceId = exp.ExperienceId,
-                    JobTitle = exp.JobTitle,
-                    CompanyName = exp.CompanyName,
-                    // Thêm các thuộc tính khác
-                });
-
-            // Lấy và chuyển đổi kỹ năng
-            var skills = _unitOfWork.AccountSkillDao.Find(skill => skill.AccountId == accountId)
-                .Select(skill => new AccountSkillDto
-                {
-                    SkillId = skill.SkillId,
-                    SkillName = skill.SkillName,
-                    // Thêm các thuộc tính khác
-                });*/
 
             // Tạo và trả về DTO
             return new AccountProfileDto
             {
                 Account = accountDto,
-       /*         Certificates = certificates,
-                Educations = educations,
-                Experiences = experiences,
-                Skills = skills*/
+                Certificates = GetAccountCertificate(account),
+                Skills = GetAccountSkill(account),
+                Educations = GetAccountEducation(account),
+                Experiences = GetAccountExperience(account)
             };
         }
 
@@ -205,5 +291,19 @@ namespace JobScial.DAL.Repositorys.Implementations
             }
         }
         #endregion
+
+        public void DeleteAccount(int accountId)
+        {
+            var account = _unitOfWork.AccountDao.FindOne(a => a.AccountId == accountId);
+
+            if (account == null)
+            {
+                throw new Exception($"Account with ID {accountId} not found.");
+            }
+
+            _unitOfWork.AccountDao.Delete(account);
+
+            _unitOfWork.Commit();
+        }
     }
 }

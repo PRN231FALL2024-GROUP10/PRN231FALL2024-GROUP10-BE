@@ -59,3 +59,4 @@ node_modules/
 *.pid
 *.seed
 *.swp
+/JobScial.WebAPI/obj/Debug/net7.0/JobScial.WebAPI.assets.cache

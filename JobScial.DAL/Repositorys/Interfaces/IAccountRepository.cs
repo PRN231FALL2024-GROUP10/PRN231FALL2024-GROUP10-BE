@@ -14,6 +14,7 @@ namespace JobScial.DAL.Repositorys.Interfaces
         public Task<AccountProfileDto> GetProfileByEmail(string email);
         public Task<AccountProfileDto> UpdateProfile(string email, UpdateProfileDto profile);
         public Task<GetAccountResponse> Register(RegisterRequest registerRequest);
+        public void DeleteAccount(int accountId);
 
     }
 }

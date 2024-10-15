@@ -21,7 +21,23 @@ namespace JobScial.WebAPI.Controllers
         {
             _accountRepository = accountRepository;
         }
+        #region Delete Account
+        [HttpDelete("{accountId}")]
+        [EnableQuery]
+        public async Task<IActionResult> DeleteAccount([FromRoute] int accountId)
+        {
+            try
+            {
+                _accountRepository.DeleteAccount(accountId);
 
+                return Ok(new { Message = "Account deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
+            }
+        }
+        #endregion
         #region Register
         [HttpPost("Register")]
         [EnableQuery]

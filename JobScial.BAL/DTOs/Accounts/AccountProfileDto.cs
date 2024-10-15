@@ -17,36 +17,67 @@ namespace JobScial.BAL.DTOs.Accounts
 
     public class AccountCertificateDto
     {
-        public string CertificateName { get; set; }
-        // Thêm các thuộc tính khác cần thiết từ lớp AccountCertificate
+        public int Index { get; set; }
+        public string Link { get; set; }
     }
 
     public class AccountEducationDto
     {
-        public string InstitutionName { get; set; }
-        public string Degree { get; set; }
-        // Thêm các thuộc tính khác cần thiết từ lớp AccountEducation
+        public int AccountId { get; set; }
+
+        public int SchoolId { get; set; }
+
+        public int YearStart { get; set; }
+
+        public int? Timespan { get; set; }
+
+        public int? TimespanUnit { get; set; }
+
+        public string? Description { get; set; }
+
+        public string? SchoolName { get; set; }
     }
 
     public class AccountExperienceDto
     {
-        public string JobTitle { get; set; }
+        public int AccountId { get; set; }
+
+        public int CompanyId { get; set; }
         public string CompanyName { get; set; }
-        // Thêm các thuộc tính khác cần thiết từ lớp AccountExperience
+
+        public int YearStart { get; set; }
+
+        public string? JobTitle { get; set; }
+
+        public int? Timespan { get; set; }
+
+        public int? TimespanUnit { get; set; }
+
+        public string? Description { get; set; }
+        public string? TimespanUnitName { get; set; }
     }
 
     public class AccountSkillDto
     {
-        public string SkillName { get; set; }
-        // Thêm các thuộc tính khác cần thiết từ lớp AccountSkill
+        public int AccountId { get; set; }
+
+        public int SkillCategoryId { get; set; }
+
+        public int? SkillLevel { get; set; }
+
+        public int? Timespan { get; set; }
+
+        public int? TimespanUnit { get; set; }
+
+        public string? Description { get; set; }
     }
 
     public class AccountProfileDto
     {
         public AccountDto Account { get; set; }
-/*        public IEnumerable<AccountCertificateDto> Certificates { get; set; }
-        public IEnumerable<AccountEducationDto> Educations { get; set; }
-        public IEnumerable<AccountExperienceDto> Experiences { get; set; }
-        public IEnumerable<AccountSkillDto> Skills { get; set; }*/
+        public IEnumerable<AccountCertificateDto> Certificates { get; set; } = new List<AccountCertificateDto>();
+        public IEnumerable<AccountEducationDto> Educations { get; set; } = new List<AccountEducationDto>();
+        public IEnumerable<AccountExperienceDto> Experiences { get; set; } = new List<AccountExperienceDto>();
+        public IEnumerable<AccountSkillDto> Skills { get; set; } = new List<AccountSkillDto>();
     }
 }

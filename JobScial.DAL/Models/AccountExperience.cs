@@ -8,6 +8,7 @@ public partial class AccountExperience
     public int AccountId { get; set; }
 
     public int CompanyId { get; set; }
+    public virtual Company Company { get; set; }
 
     public int YearStart { get; set; }
 

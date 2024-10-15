@@ -37,12 +37,17 @@ namespace JobScial.DAL.DAOs.Implements
     public class AccountSkillDao : Dao<AccountSkill>, IAccountSkillDao
     {
         public AccountSkillDao(JobSocialContext context) : base(context) { }
+
+        public IEnumerable<AccountSkill> GetSkillsByAccountId(int accountId)
+        {
+            return _context.AccountSkills.Where(skill => skill.AccountId == accountId).ToList();
+        }
         // Additional methods can be implemented here if needed
     }
 
     public class Dao<TEntity> : IDao<TEntity> where TEntity : class
     {
-        private readonly JobSocialContext _context;
+        protected readonly JobSocialContext _context;
         public Dao(JobSocialContext context)
         {
             _context = context;

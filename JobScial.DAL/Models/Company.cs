@@ -14,6 +14,5 @@ public partial class Company
     public string? Name { get; set; }
 
     public int? Status { get; set; }
-
     public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
 }

@@ -17,6 +17,7 @@ namespace JobScial.BAL.DTOs.Accounts
 
     public class AccountCertificateDto
     {
+        public int AccountId { get; set; }
         public int Index { get; set; }
         public string Link { get; set; }
     }

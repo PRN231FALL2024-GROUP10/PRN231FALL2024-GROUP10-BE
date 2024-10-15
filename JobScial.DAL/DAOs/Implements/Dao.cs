@@ -63,6 +63,12 @@ namespace JobScial.DAL.DAOs.Implements
 
     }
 
+    public class SchoolDao : Dao<School>, ISchoolDao
+    {
+        public SchoolDao(JobSocialContext context) : base(context) { }
+
+    }
+
     public class TimeSpanUnitDao : Dao<TimespanUnit>, ITimeSpanUnitDao
     {
         public TimeSpanUnitDao(JobSocialContext context) : base(context) { }

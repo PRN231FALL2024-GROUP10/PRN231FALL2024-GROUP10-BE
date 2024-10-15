@@ -24,8 +24,7 @@ namespace JobScial.WebAPI.Controllers
         }
 
         #region Login
-        [EnableQuery]
-        [HttpPost("odata/authentications/login")]
+        [HttpPost("Authentications/login")]
         public async Task<IActionResult> Login([FromBody] PostAccountRequest request)
         {
             /*var validationResult = await _loginValidator.ValidateAsync(request);

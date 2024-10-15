@@ -19,8 +19,7 @@ namespace JobScial.WebAPI.Controllers
             _postCategoryRepository = postCategoryRepository;
         }
 
-        [HttpGet("odata/PostCategory")]
-        [EnableQuery]
+        [HttpGet("PostCategory")]
         public async Task<IActionResult> GetAllPostCategories()
         {
             var postCategories = await _postCategoryRepository.getAll();
@@ -40,7 +39,7 @@ namespace JobScial.WebAPI.Controllers
         }
 
         
-        [HttpPost("odata/PostCategory")]
+        [HttpPost("PostCategory")]
         public async Task<IActionResult> CreatePostCategory([FromBody] PostCategoryDto postCategoryDto)
         {
             if (!ModelState.IsValid)
@@ -54,7 +53,8 @@ namespace JobScial.WebAPI.Controllers
             await _postCategoryRepository.add(postCategory);
             return Created(postCategory);
         }
-        [HttpPut("odata/PostCategory/{id}")]
+
+        [HttpPut("PostCategory/{id}")]
         public async Task<IActionResult> UpdatePostCategory(int id, [FromBody] PostCategoryDto updatedPostCategory)
         {
             if (!ModelState.IsValid)
@@ -72,7 +72,7 @@ namespace JobScial.WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("odata/PostCategory/{id}")]
+        [HttpDelete("PostCategory/{id}")]
         public async Task<IActionResult> DeletePostCategory(int id)
         {
             var postCategory = await _postCategoryRepository.getById(id);

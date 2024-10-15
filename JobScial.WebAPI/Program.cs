@@ -23,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Account>("Accounts");
+modelBuilder.EntitySet<Post>("Posts");
 modelBuilder.EntitySet<PostCategory>("PostCategory");
 builder.Services.AddControllers()
 .AddOData(opt => opt
@@ -131,6 +132,7 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+#endregion
 
 builder.Services.AddCors(options =>
 {
@@ -143,7 +145,7 @@ builder.Services.AddCors(options =>
 });
 
 
-#endregion
+
 var app = builder.Build();
 
 

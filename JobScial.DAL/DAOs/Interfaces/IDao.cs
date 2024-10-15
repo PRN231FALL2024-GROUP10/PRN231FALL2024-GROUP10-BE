@@ -18,26 +18,24 @@ namespace JobScial.DAL.DAOs.Interfaces
     }
     public interface IAccountDao : IDao<Account>
     {
-        // Additional methods specific to Account can be declared here
     }
     public interface IAccountCertificateDao : IDao<AccountCertificate>
     {
-        // Additional methods specific to AccountCertificate can be declared here
     }
 
     public interface IAccountEducationDao : IDao<AccountEducation>
     {
-        // Additional methods specific to AccountEducation can be declared here
     }
 
     public interface IAccountExperienceDao : IDao<AccountExperience>
     {
-        // Additional methods specific to AccountExperience can be declared here
     }
 
     public interface IAccountSkillDao : IDao<AccountSkill>
     {
-        // Additional methods specific to AccountSkill can be declared here
         IEnumerable<AccountSkill> GetSkillsByAccountId(int accountId);
+    }
+    public interface IPostCategorySkillDao : IDao<PostCategory>
+    {
     }
 }

@@ -13,25 +13,21 @@ namespace JobScial.DAL.DAOs.Implements
     public class AccountDao : Dao<Account>, IAccountDao
     {
         public AccountDao(JobSocialContext context) : base(context) { }
-        // Additional methods can be implemented here if needed
     }
 
     public class AccountCertificateDao : Dao<AccountCertificate>, IAccountCertificateDao
     {
         public AccountCertificateDao(JobSocialContext context) : base(context) { }
-        // Additional methods can be implemented here if needed
     }
 
     public class AccountEducationDao : Dao<AccountEducation>, IAccountEducationDao
     {
         public AccountEducationDao(JobSocialContext context) : base(context) { }
-        // Additional methods can be implemented here if needed
     }
 
     public class AccountExperienceDao : Dao<AccountExperience>, IAccountExperienceDao
     {
         public AccountExperienceDao(JobSocialContext context) : base(context) { }
-        // Additional methods can be implemented here if needed
     }
 
     public class AccountSkillDao : Dao<AccountSkill>, IAccountSkillDao
@@ -42,7 +38,11 @@ namespace JobScial.DAL.DAOs.Implements
         {
             return _context.AccountSkills.Where(skill => skill.AccountId == accountId).ToList();
         }
-        // Additional methods can be implemented here if needed
+    }
+    public class PostCategoryDao : Dao<PostCategory>, IPostCategorySkillDao
+    {
+        public PostCategoryDao(JobSocialContext context) : base(context) { }
+
     }
 
     public class Dao<TEntity> : IDao<TEntity> where TEntity : class

@@ -18,9 +18,6 @@ C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.Ass
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.AssemblyInfo.cs
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.csproj.CoreCompileInputs.cache
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.sourcelink.json
-C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.dll
-C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\refint\JobScial.DAL.dll
-C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.pdb
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.deps.json
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.runtimeconfig.json
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.dll
@@ -28,5 +25,8 @@ C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\bin\Debug\net7.0\JobScial.DAL.pdb
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\bin\Debug\net7.0\JobScial.BAL.dll
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\bin\Debug\net7.0\JobScial.BAL.pdb
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.csproj.CopyComplete
+C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.dll
+C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\refint\JobScial.DAL.dll
+C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.pdb
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\JobScial.DAL.genruntimeconfig.cache
 C:\Code\PRN231FALL2024-GROUP10-BE\JobScial.DAL\obj\Debug\net7.0\ref\JobScial.DAL.dll

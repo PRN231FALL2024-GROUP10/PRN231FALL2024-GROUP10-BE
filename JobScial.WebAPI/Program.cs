@@ -23,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Account>("Accounts");
+modelBuilder.EntitySet<PostCategory>("PostCategory");
 builder.Services.AddControllers()
 .AddOData(opt => opt
                .AddRouteComponents(routePrefix: "odata", model: modelBuilder.GetEdmModel())
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>(
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IlikeRepository, LikeRepository>();
+builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
 #region JWT 
 builder.Services.AddSwaggerGen(options =>
 {

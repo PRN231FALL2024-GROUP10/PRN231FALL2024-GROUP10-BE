@@ -27,9 +27,22 @@ namespace JobScial.DAL.Infrastructures
         private AccountSkillDao _accountSkillDao;
         private AccountEducationDao _accountEducationDao;
         private AccountExperienceDao _accountExperienceDao;
+        private PostCategoryDao _postCategoryDao;
+
         public UnitOfWork(IDbFactory dbFactory)
         {
             _dbContext = dbFactory.InitDbContext();
+        }
+        public PostCategoryDao PostCategoryDao
+        {
+            get
+            {
+                if (_postCategoryDao == null)
+                {
+                    _postCategoryDao = new PostCategoryDao(_dbContext);
+                }
+                return _postCategoryDao;
+            }
         }
         public AccountExperienceDao AccountExperienceDao
         {

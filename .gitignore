@@ -40,12 +40,16 @@ node_modules/
 
 *.bin
 *.obj
+*.cache
+*.csproj
 
 # Ignore editor settings and files
 
 .idea/
 .vs/
 .vscode/
+bin/
+obj/
 
 *.code-workspace
 *.suo

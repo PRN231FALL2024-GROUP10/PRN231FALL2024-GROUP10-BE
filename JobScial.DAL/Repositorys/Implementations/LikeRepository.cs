@@ -37,11 +37,17 @@ namespace JobScial.DAL.Repositorys.Implementations
                 JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
                 string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
                 var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
+                var post = await _unitOfWork.PostDAO.GetPostById(like.PostId);
 
+                if (post == null)
+                {
+                    throw new Exception("Post not found.");
+                }
                 Like like1 = new Like
                 {
                     AccountId = accountStaff.AccountId,
                     PostId = like.PostId,
+                    Post = post,
                 };
 
                 await _unitOfWork.likeDAO.AddNewLike(like1);

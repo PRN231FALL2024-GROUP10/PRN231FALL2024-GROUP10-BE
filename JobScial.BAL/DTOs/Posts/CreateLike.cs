@@ -10,6 +10,5 @@ namespace JobScial.BAL.DTOs.Posts
     {
         public int PostId { get; set; }
 
-        public int AccountId { get; set; }
     }
 }

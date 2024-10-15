@@ -29,7 +29,19 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Post> GetPostById(int? postId)
+        {
 
+            try
+            {
+                return await this._dbContext.Posts
+                    .SingleOrDefaultAsync(a => a.PostID.Equals(postId));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<List<Post>> GetPosts()
         {
             try

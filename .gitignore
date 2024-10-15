@@ -45,9 +45,9 @@ node_modules/
 
 # Ignore editor settings and files
 
-.idea/
-.vs/
-.vscode/
+*/.idea/
+*/.vs/
+*/.vscode/
 */bin/
 */obj/
 

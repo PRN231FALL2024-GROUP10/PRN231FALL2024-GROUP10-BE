@@ -23,7 +23,7 @@ namespace JobScial.WebAPI.Controllers
         }
 
 
-        [HttpPost("odata/Post/AddNewPost")]
+        [HttpPost("Post/AddNewPost")]
         //[PermissionAuthorize("Staff")]
         public async Task<IActionResult> Post([FromForm] CreatePostRequest createPostRequest)
         {
@@ -63,9 +63,10 @@ namespace JobScial.WebAPI.Controllers
             return Ok(); // Trả về phản hồi
 
         }
-        [HttpGet("odata/Posts/Active/Post")]
+
+        [HttpGet("Post/Active")]
         [EnableQuery]
-        public async Task<IActionResult> ActivePosts()
+        public async Task<IActionResult> GetActivePosts()
         {
             List<Post> products = await this._postRepository.GetAllPostsAsync(HttpContext);
             if (products == null || !products.Any())
@@ -75,7 +76,6 @@ namespace JobScial.WebAPI.Controllers
             return Ok(products);
         }
         [HttpPut("Post/{key}/UpdatePost")]
-        [EnableQuery]
         //[PermissionAuthorize("Customer", "Store Owner")]
         public async Task<IActionResult> Put([FromRoute] int key, [FromForm] UpdatePostRequest updatePostRequest)
         {

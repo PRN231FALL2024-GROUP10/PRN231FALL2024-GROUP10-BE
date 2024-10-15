@@ -40,12 +40,16 @@ node_modules/
 
 *.bin
 *.obj
+*.cache
+*.csproj
 
 # Ignore editor settings and files
 
-.idea/
-.vs/
-.vscode/
+*/.idea/
+*/.vs/
+*/.vscode/
+*/bin/
+*/obj/
 
 *.code-workspace
 *.suo
@@ -60,3 +64,6 @@ node_modules/
 *.seed
 *.swp
 /JobScial.WebAPI/obj/Debug/net7.0/JobScial.WebAPI.assets.cache
+/.vs/PRN231FALL2024-GROUP10-BE-NEW/v17
+/.gitignore
+/JobScial.WebAPI/.vs/JobScial.WebAPI/v17/.suo

@@ -18,7 +18,7 @@ namespace JobScial.WebAPI.Controllers
             _likeRepository = likeRepository;
         }
 
-        [HttpPost("odata/Like/AddNewLike")]
+        [HttpPost("Like/AddNewLike")]
         [EnableQuery]
         public async Task<IActionResult> Post([FromBody] CreateLike createLike)
         {

@@ -1,6 +1,7 @@
 ﻿using BMOS.BAL.Exceptions;
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
+using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
 using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -76,7 +77,7 @@ namespace JobScial.WebAPI.Controllers
         [HttpPut("Post/{key}/UpdatePost")]
         [EnableQuery]
         //[PermissionAuthorize("Customer", "Store Owner")]
-        public async Task<IActionResult> Put([FromRoute] int key, [FromForm] CreatePostRequest updatePostRequest)
+        public async Task<IActionResult> Put([FromRoute] int key, [FromForm] UpdatePostRequest updatePostRequest)
         {
             CommonResponse commonResponse = new CommonResponse();
 
@@ -92,9 +93,7 @@ namespace JobScial.WebAPI.Controllers
                         return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
                     default:
                         return StatusCode(500, commonResponse);
-
                 }
-
             }
             catch (Exception ex)
             {

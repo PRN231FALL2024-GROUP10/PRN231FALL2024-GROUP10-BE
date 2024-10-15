@@ -15,6 +15,7 @@ using System.Net.Http;
 using GenZStyleAPP.BAL.Errors;
 using Azure;
 using JobScial.BAL.DTOs.Accounts;
+using JobScial.BAL.DTOs.Posts;
 
 namespace JobScial.DAL.Repositorys.Implementations
 {
@@ -54,7 +55,7 @@ namespace JobScial.DAL.Repositorys.Implementations
                     HasPhoto  = post.HasPhoto,
 
                 };
-                List<PostPhotos> postPhotosToSave = new List<PostPhotos>();
+                List<PostPhoto> postPhotosToSave = new List<PostPhoto>();
                 await _unitOfWork.PostDAO.AddNewPost(post1);
 
                 // Xử lý nếu có ảnh
@@ -67,7 +68,7 @@ namespace JobScial.DAL.Repositorys.Implementations
                         // Lặp qua từng file trong danh sách file ảnh
 
                         // Lưu file và tạo đối tượng PostPhoto
-                        var photo = new PostPhotos
+                        var photo = new PostPhoto
                         {
                             PostId = post1.PostID,
                             Link = await SaveFile(imageFile),  // Lưu file và lấy đường dẫn
@@ -135,11 +136,11 @@ namespace JobScial.DAL.Repositorys.Implementations
             return $"/Uploads/{fileName}";
         }
 
-        public async Task<CommonResponse> UpdatePostAsync(CreatePostRequest post, HttpContext httpContext , int id)
+        public async Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, HttpContext httpContext , int id)
         {
             string loginSuccessMsg = _config["ResponseMessages:AuthenticationMsg:UnauthenticationMsg"];
-            string CreatePostSuccessedMsg = _config["ResponseMessages:CommonMsg:CreatePostSuccessedMsg"];
-            string NotCreateSuccessMsg = _config["ResponseMessages:RolePermissionMsg:NotCreateSuccessMsg"];
+            string UpdatePostSuccessedMsg = _config["ResponseMessages:CommonMsg:UpdatePostSuccessedMsg"];
+            string NotUpdateSuccessMsg = _config["ResponseMessages:RolePermissionMsg:NotUpdateSuccessMsg"];
             CommonResponse commonResponse = new CommonResponse();
 
             try
@@ -148,21 +149,72 @@ namespace JobScial.DAL.Repositorys.Implementations
                 string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
                 var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
 
-                Post post1 = new Post
+                // Lấy bài viết cần cập nhật từ cơ sở dữ liệu
+                var existingPost = await _unitOfWork.PostDAO.GetPostById(id);
+                if (existingPost == null)
                 {
-                    Content = post.Content,
-                    CreatedOn = DateTime.UtcNow,
-                    CreatedBy = accountStaff.AccountId,
-                    HasPhoto = post.HasPhoto,
+                    commonResponse.Message = "Post not found.";
+                    commonResponse.Status = 404; // Not Found
+                    return commonResponse;
+                }
 
-                };
+                // Cập nhật thông tin bài viết
+                existingPost.Content = post.Content;
+                existingPost.HasPhoto = post.HasPhoto;
 
-                await _unitOfWork.PostDAO.UpdatePost(post1);
+                List<PostPhoto> postPhotosToSave = new List<PostPhoto>();
+
+                // Xử lý nếu có ảnh được cập nhật
+                if (post.HasPhoto == true && post.Link != null && post.Link.Any())
+                {
+                    int index = 0;
+
+                    // Xóa các ảnh cũ nếu cần cập nhật
+                    existingPost.PostPhotos.Clear();
+                    // Tìm PostPhoto dựa trên ID
+                    var existingPhoto = await _unitOfWork.PostPhotoDAO.GetAllById(id);
+
+                    foreach (var photo in existingPhoto)  // Sử dụng ToList() để tránh lỗi khi thay đổi danh sách trong khi lặp
+                    {
+                        await _unitOfWork.PostPhotoDAO.DeleteFirstPostPhotoByPostIdAsync(photo.PostId);  // Gọi hàm xóa ảnh theo Id
+                    }
+                    foreach (var imageFile in post.Link)
+                    {
+
+                        
+                            var photo = new PostPhoto
+                        {
+                            PostId = existingPost.PostID,
+                            Link = await SaveFile(imageFile),  // Lưu file và lấy đường dẫn
+                            Caption = "", // Chú thích cho ảnh
+                            Index = index++, // Chỉ số của ảnh
+                            Post = existingPost // Liên kết PostPhoto với Post
+                        };
+
+                        // Thêm ảnh vào danh sách ảnh của bài post
+                        existingPost.PostPhotos.Add(photo);
+                        postPhotosToSave.Add(photo); } 
+                        
+                        // Lưu danh sách ảnh sau khi cập nhật
+                
+                        if (postPhotosToSave.Any())
+                            {
+                            foreach (var postPhoto in postPhotosToSave)
+                                {
+                                    await _unitOfWork.PostPhotoDAO.AddNewPostPhoto(postPhoto);  // Lưu từng PostPhoto
+                                }
+                        }
+                        
+                    }
+                
+
+                // Cập nhật bài viết trong cơ sở dữ liệu
+                await _unitOfWork.PostDAO.UpdatePost(existingPost);
                 await _unitOfWork.CommitAsync();
 
-                commonResponse.Data = post1;
+                commonResponse.Data = existingPost;
                 commonResponse.Status = 200;
-                commonResponse.Message = CreatePostSuccessedMsg;
+                commonResponse.Message = UpdatePostSuccessedMsg;
                 return commonResponse;
             }
             catch (Exception ex)

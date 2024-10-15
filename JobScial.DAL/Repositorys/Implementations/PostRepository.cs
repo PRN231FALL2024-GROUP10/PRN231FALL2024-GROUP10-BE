@@ -238,9 +238,9 @@ namespace JobScial.DAL.Repositorys.Implementations
         {
             try
             {
-                JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
+               /* JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
                 string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
-                var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
+                var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);*/
                 // Lấy tất cả bài post
                 List<Post> allPosts = await _unitOfWork.PostDAO.GetPosts();
                 return allPosts;

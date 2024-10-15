@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JobScial.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30529217df28c34ece050f350f517ade208cd578")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+445dda82884d60039177f0af4fdd792fdab252d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("JobScial.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JobScial.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

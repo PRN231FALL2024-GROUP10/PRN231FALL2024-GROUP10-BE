@@ -54,4 +54,8 @@ namespace JobScial.DAL.DAOs.Interfaces
     public interface ITimeSpanUnitDao : IDao<TimespanUnit>
     {
     }
+
+    public interface ISchoolDao : IDao<School>
+    {
+    }
 }

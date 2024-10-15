@@ -28,6 +28,11 @@ namespace JobScial.DAL.Infrastructures
         private AccountEducationDao _accountEducationDao;
         private AccountExperienceDao _accountExperienceDao;
         private PostCategoryDao _postCategoryDao;
+        private CompanyDao _companyDao;
+        private JobTitleDao _jobTitleDao;
+        private SkillDao _skillDao;
+        private SchoolDao _schoolDao;
+        private TimeSpanUnitDao _timeSpanUnitDao;
 
         public UnitOfWork(IDbFactory dbFactory)
         {
@@ -154,6 +159,66 @@ namespace JobScial.DAL.Infrastructures
                     _likeDAO = new LikeDAO(_dbContext);
                 }
                 return _likeDAO;
+            }
+        }
+
+        public CompanyDao CompanyDAO
+        {
+            get
+            {
+                if (_companyDao == null)
+                {
+                    _companyDao = new CompanyDao(_dbContext);
+                }
+                return _companyDao;
+            }
+        }
+
+        public SchoolDao SchoolDAO
+        {
+            get
+            {
+                if (_schoolDao == null)
+                {
+                    _schoolDao = new SchoolDao(_dbContext);
+                }
+                return _schoolDao;
+            }
+        }
+
+        public JobTitleDao JobTitleDAO
+        {
+            get
+            {
+                if (_jobTitleDao == null)
+                {
+                    _jobTitleDao = new JobTitleDao(_dbContext);
+                }
+                return _jobTitleDao;
+            }
+        }
+
+        public SkillDao SkillDAO
+        {
+            get
+            {
+                if (_skillDao == null)
+                {
+                    _skillDao = new SkillDao(_dbContext);
+                }
+                return _skillDao;
+            }
+        }
+
+        public TimeSpanUnitDao TimeSpanUnitDAO
+        {
+            get
+            {
+                if (_timeSpanUnitDao == null)
+                {
+                    _timeSpanUnitDao = new TimeSpanUnitDao(_dbContext);
+                }
+                return _timeSpanUnitDao;
             }
         }
 

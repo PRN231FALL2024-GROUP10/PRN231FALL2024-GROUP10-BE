@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobScial.DAL.Models;
 
 public partial class AccountEducation
 {
+    [Key]
     public int AccountId { get; set; }
-
+    [Key]
     public int SchoolId { get; set; }
-
+    [Key]
     public int YearStart { get; set; }
 
     public int? Timespan { get; set; }

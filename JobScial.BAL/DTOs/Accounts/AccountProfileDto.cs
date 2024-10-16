@@ -37,6 +37,7 @@ namespace JobScial.BAL.DTOs.Accounts
         public string? Description { get; set; }
 
         public string? SchoolName { get; set; }
+        public string? TimespanUnitName { get; set; }
     }
 
     public class AccountExperienceDto

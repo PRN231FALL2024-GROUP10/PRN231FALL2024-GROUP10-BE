@@ -31,5 +31,11 @@ namespace JobScial.BAL.DTOs.Accounts
         public DateTime? DoB { get; set; }
         
     }
+
+    public class SubAccountResponse
+    {
+        public int AccountId { get; set; }
+        public int Id { get; set; }
+    }
 }
 

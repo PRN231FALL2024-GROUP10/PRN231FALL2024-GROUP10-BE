@@ -23,8 +23,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Account>("Accounts");
-modelBuilder.EntitySet<Post>("Posts");
-modelBuilder.EntitySet<PostCategory>("PostCategory");
+modelBuilder.EntitySet<AccountCertificate>("AccountCertificate");
+modelBuilder.EntitySet<AccountEducation>("AccountEducation");
+modelBuilder.EntitySet<AccountExperience>("AccountExperience");
+modelBuilder.EntitySet<AccountSkill>("AccountSkill");
+modelBuilder.EntitySet<School>("School");
+modelBuilder.EntitySet<JobTitle>("JobTitle");
+modelBuilder.EntitySet<SkillCategory>("SkillCategory");
+modelBuilder.EntitySet<TimespanUnit>("TimespanUnit");
+modelBuilder.EntitySet<Company>("Company");
 builder.Services.AddControllers()
 .AddOData(opt => opt
                .AddRouteComponents(routePrefix: "odata", model: modelBuilder.GetEdmModel())
@@ -55,6 +62,12 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IlikeRepository, LikeRepository>();
 builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
+builder.Services.AddScoped<ISharedRepository, SharedRepository>();
+builder.Services.AddScoped<IAccountCertRepository, AccountCertRepository>();
+builder.Services.AddScoped<IAccountEduRepository, AccountEduRepository>();
+builder.Services.AddScoped<IAccountExpRepository, AccountExpRepository>();
+builder.Services.AddScoped<IAccountSkillRepository, AccountSkillRepository>();
+
 #region JWT 
 builder.Services.AddSwaggerGen(options =>
 {

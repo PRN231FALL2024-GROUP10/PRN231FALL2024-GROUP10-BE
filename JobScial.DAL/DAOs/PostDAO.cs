@@ -48,7 +48,14 @@ namespace JobScial.DAL.DAOs
             {
 
                 List<Post> posts = await _dbContext.Posts
-                    .Include(m=>m.Comments)
+                    .AsNoTracking()
+                    .Include(m => m.Likes)
+                    .Include(m => m.Comments)
+                    .Include(m => m.Job)
+                    .Include(m => m.PostPhotos)
+                    .Include(m => m.PostCategory)
+                    .Include(m => m.PostSkill)
+                        .ThenInclude(p => p.SkillCategory)
                     .ToListAsync();
                 return posts;
 

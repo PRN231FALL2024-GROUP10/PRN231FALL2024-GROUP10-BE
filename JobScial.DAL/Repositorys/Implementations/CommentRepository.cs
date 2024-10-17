@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -80,9 +81,33 @@ namespace JobScial.DAL.Repositorys.Implementations
 
         }
 
-        public async Task DeleteCommentAsync(int commentId)
+        public async Task<CommonResponse> DeleteCommentAsync(int commentId)
         {
-            throw new NotImplementedException();
+            string CreateCommentSuccessedMsg = _config["ResponseMessages:CommonMsg:DeleteCommentSuccessedMsg"];
+
+            CommonResponse commonResponse = new CommonResponse();
+            try
+            {
+                var comment = await _unitOfWork.CommentDAO.GetCommentById(commentId);
+                if (comment == null)
+                {
+                    throw new Exception("comment do not exists ");
+                }
+
+                await _unitOfWork.CommentDAO.DeleteComment(comment);
+                await _unitOfWork.CommitAsync();
+
+                commonResponse.Data = comment;
+                commonResponse.Status = 200;
+                commonResponse.Message = CreateCommentSuccessedMsg;
+                return commonResponse;
+            }
+            catch (Exception ex)
+            {
+                commonResponse.Message = ex.Message;
+                commonResponse.Status = 405;
+            }
+            return commonResponse;
         }
 
         public async Task<List<Comment>> GetAllCommentsAsync()

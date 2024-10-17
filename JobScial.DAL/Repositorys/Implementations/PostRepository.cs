@@ -57,7 +57,42 @@ namespace JobScial.DAL.Repositorys.Implementations
                 };
                 List<PostPhoto> postPhotosToSave = new List<PostPhoto>();
                 await _unitOfWork.PostDAO.AddNewPost(post1);
+                await _unitOfWork.CommitAsync(); // Lưu thay đổi để PostId được gán
 
+                // Xử lý kỹ năng của bài đăng
+                List<PostSkill> postSkillsToSave = new List<PostSkill>();
+                foreach (var skill in post.Skills)
+                {
+                    var skillCategory = await _unitOfWork.SkillCategoryDAO.GetSkillCategoryByName(skill);
+                    if (skillCategory != null)
+                    {
+                        PostSkill postSkill = new PostSkill
+                        {
+                            PostId = post1.PostID,
+                            SkillCategoryId = skillCategory.SkillCategoryId,
+                        };
+                        postSkillsToSave.Add(postSkill);
+                    }
+                }
+                // Lưu danh sách PostSkill
+                if (postSkillsToSave.Any())
+                {
+                    foreach (var postSkill in postSkillsToSave)
+                    {
+                         _unitOfWork.PostSkillDao.Add(postSkill);
+                    }
+                }
+
+                JobTitle jobTitle = new JobTitle
+                {
+                    Name = post.JobTitle,
+                };
+
+
+                PostCategory postCategory = new PostCategory
+                {
+                   Name = post.Category,
+                };
                 // Xử lý nếu có ảnh
                 if (post.HasPhoto == true && post.Link != null && post.Link.Any())
                 {
@@ -93,6 +128,10 @@ namespace JobScial.DAL.Repositorys.Implementations
                         await _unitOfWork.PostPhotoDAO.AddNewPostPhoto(postPhoto);  // Lưu từng PostPhoto
                     }
                 }
+                post1.PostCategory = postCategory;
+                post1.Job = jobTitle;
+                await _unitOfWork.PostCategoryDA0.AddPostCategory(postCategory);
+                await _unitOfWork.JobTitleDao.AddJobTitle(jobTitle);
                 await _unitOfWork.CommitAsync();
 
                 commonResponse.Data = post1;
@@ -206,8 +245,6 @@ namespace JobScial.DAL.Repositorys.Implementations
                         }
                         
                     }
-                
-
                 // Cập nhật bài viết trong cơ sở dữ liệu
                 await _unitOfWork.PostDAO.UpdatePost(existingPost);
                 await _unitOfWork.CommitAsync();

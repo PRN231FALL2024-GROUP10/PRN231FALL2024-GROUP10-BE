@@ -24,6 +24,10 @@ namespace JobScial.DAL.DAOs.Implements
     {
         public AccountEducationDao(JobSocialContext context) : base(context) { }
     }
+    public class PostSkillDao : Dao<PostSkill>, IPostSkillDao
+    {
+        public PostSkillDao(JobSocialContext context) : base(context) { }
+    }
 
     public class AccountExperienceDao : Dao<AccountExperience>, IAccountExperienceDao
     {

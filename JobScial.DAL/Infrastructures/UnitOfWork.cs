@@ -22,6 +22,13 @@ namespace JobScial.DAL.Infrastructures
         private AccountDao _accountDao;
         private LikeDAO _likeDAO;
         private PostPhotoDAO _postPhotoDAO;
+        private SkillCategoryDAO _skillCategoryDAO;
+        private PostSkillDao _postSkillDao;
+        private PostCategoryDAO _PostCategoryDao;
+        private JobTitleDAO _JobTitleDAO;
+
+
+
 
         private AccountCertificateDao _accountCertificateDao;
         private AccountSkillDao _accountSkillDao;
@@ -38,6 +45,18 @@ namespace JobScial.DAL.Infrastructures
         {
             _dbContext = dbFactory.InitDbContext();
         }
+        public PostCategoryDAO PostCategoryDA0
+        {
+            get
+            {
+                if (_PostCategoryDao == null)
+                {
+                    _PostCategoryDao = new PostCategoryDAO(_dbContext);
+                }
+                return _PostCategoryDao;
+            }
+        }
+
         public PostCategoryDao PostCategoryDao
         {
             get
@@ -49,6 +68,29 @@ namespace JobScial.DAL.Infrastructures
                 return _postCategoryDao;
             }
         }
+        public JobTitleDAO JobTitleDao
+        {
+            get
+            {
+                if (_JobTitleDAO == null)
+                {
+                    _JobTitleDAO = new JobTitleDAO(_dbContext);
+                }
+                return _JobTitleDAO;
+            }
+        }
+
+        public SkillCategoryDAO SkillCategoryDAO
+        {
+            get
+            {
+                if (_skillCategoryDAO == null)
+                {
+                    _skillCategoryDAO = new SkillCategoryDAO(_dbContext);
+                }
+                return _skillCategoryDAO;
+            }
+        }
         public AccountExperienceDao AccountExperienceDao
         {
             get
@@ -58,6 +100,17 @@ namespace JobScial.DAL.Infrastructures
                     _accountExperienceDao = new AccountExperienceDao(_dbContext);
                 }
                 return _accountExperienceDao;
+            }
+        }
+        public PostSkillDao PostSkillDao
+        {
+            get
+            {
+                if (_postSkillDao == null)
+                {
+                    _postSkillDao = new PostSkillDao(_dbContext);
+                }
+                return _postSkillDao;
             }
         }
         public AccountEducationDao AccountEducationDao

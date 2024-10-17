@@ -22,7 +22,9 @@ namespace JobScial.DAL.DAOs.Interfaces
     public interface IAccountCertificateDao : IDao<AccountCertificate>
     {
     }
-
+    public interface IPostSkillDao : IDao<PostSkill>
+    {
+    }
     public interface IAccountEducationDao : IDao<AccountEducation>
     {
     }

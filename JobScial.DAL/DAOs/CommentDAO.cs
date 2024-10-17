@@ -44,12 +44,42 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Comment> GetCommentById(int id)
+        {
+            try
+            {
+
+                Comment comments = await _dbContext.Comments
+                    .SingleOrDefaultAsync(c => c.CommentId == id);
+                return comments;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         #region Update post
         public async Task UpdateComment(Comment comment)
         {
             try
             {
                 _dbContext.Entry<Comment>(comment).State = EntityState.Modified;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion
+
+        #region DeletePost
+        public async Task DeleteComment(Comment comment)
+        {
+            try
+            {
+                this._dbContext.Comments.Remove(comment);
+
             }
             catch (Exception ex)
             {

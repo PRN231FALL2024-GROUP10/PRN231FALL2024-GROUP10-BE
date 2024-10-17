@@ -19,7 +19,7 @@ namespace JobScial.DAL.Repositorys.Interfaces
         Task UpdateCommentAsync(Comment comment);
 
 
-        Task DeleteCommentAsync(int commentId);
+        Task<CommonResponse> DeleteCommentAsync(int commentId);
 
 
         Task<Comment> GetCommentByIdAsync(int commentId);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace JobScial.DAL.Models;
 
@@ -20,6 +21,7 @@ public partial class Comment
     public DateTime? CreatedOn { get; set; }
 
     public int? Status { get; set; }
+    [JsonIgnore] 
 
     public virtual Post? Post { get; set; }
 }

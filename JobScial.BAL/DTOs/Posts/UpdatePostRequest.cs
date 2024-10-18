@@ -13,5 +13,9 @@ namespace JobScial.BAL.DTOs.Posts
         public bool? HasPhoto { get; set; }
 
         public List<IFormFile>? Link { get; set; } // Đảm bảo kiểu dữ liệu này
+
+        public List<string>? Skills { get; set; }   
+        public string? Category { get; set; }     
+        public string? JobTitle { get; set; }   
     }
 }

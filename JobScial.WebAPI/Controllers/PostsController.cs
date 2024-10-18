@@ -3,7 +3,7 @@ using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -91,6 +91,46 @@ namespace JobScial.WebAPI.Controllers
                         return StatusCode(200, "Update Post Success");
                     case 405:
                         return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("Post/GetPostByUserName")]
+        //[PermissionAuthorize("Customer", "Store Owner")]
+        public async Task<IActionResult> GetPostUser(string name)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+
+            try
+            {
+
+                var listPost = await this._postRepository.GetPostByUserName(name);
+                if (listPost == null || !listPost.Any())
+                {
+                    commonResponse.Status = 404;
+                    commonResponse.Message = "No posts found for this user.";
+                }
+                else
+                {
+                    commonResponse.Status = 200;
+                    commonResponse.Message = "Posts retrieved successfully.";
+                    commonResponse.Data = listPost; // Trả về danh sách bài viết
+                }
+
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return Ok(commonResponse); // Trả về danh sách bài post
+                    case 404:
+                        return StatusCode(404, commonResponse.Message);
+                    case 405:
+                        return StatusCode(405, "Method Not Allowed: This URL picture not safe to post.");
                     default:
                         return StatusCode(500, commonResponse);
                 }

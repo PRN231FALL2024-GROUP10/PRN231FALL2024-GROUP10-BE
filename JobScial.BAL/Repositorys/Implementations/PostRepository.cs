@@ -1,5 +1,5 @@
 ﻿using JobScial.DAL.Infrastructures;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +17,7 @@ using Azure;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Posts;
 
-namespace JobScial.DAL.Repositorys.Implementations
+namespace JobScial.BAL.Repositorys.Implementations
 {
     public class PostRepository : IPostRepository
     {
@@ -201,6 +201,20 @@ namespace JobScial.DAL.Repositorys.Implementations
                 existingPost.Content = post.Content;
                 existingPost.HasPhoto = post.HasPhoto;
 
+
+                await _unitOfWork.JobTitleDao.DeleteJobtile(existingPost.JobId);
+                await _unitOfWork.PostCategoryDA0.DeletePostCategory(existingPost.PostCategoryId);
+
+                JobTitle jobTitle = new JobTitle
+                {
+                    Name = post.JobTitle,
+                };
+
+
+                PostCategory postCategory = new PostCategory
+                {
+                    Name = post.Category,
+                };
                 List<PostPhoto> postPhotosToSave = new List<PostPhoto>();
 
                 // Xử lý nếu có ảnh được cập nhật
@@ -246,6 +260,10 @@ namespace JobScial.DAL.Repositorys.Implementations
                         
                     }
                 // Cập nhật bài viết trong cơ sở dữ liệu
+                await _unitOfWork.PostCategoryDA0.AddPostCategory(postCategory);
+                await _unitOfWork.JobTitleDao.AddJobTitle(jobTitle);
+                existingPost.JobId = jobTitle.JobId;
+                existingPost.PostCategoryId = postCategory.PostCategoryId;
                 await _unitOfWork.PostDAO.UpdatePost(existingPost);
                 await _unitOfWork.CommitAsync();
 
@@ -288,6 +306,24 @@ namespace JobScial.DAL.Repositorys.Implementations
                 throw new Exception(error);
             }
         }
+        public async Task<List<Post>> GetPostByUserName(string username)
+        {
+            try
+            {   
+                var User = await _unitOfWork.AccountDAO.GetAccountByName(username);
+                var postByUsername = await _unitOfWork.PostDAO.GetPostsByUserid(User.AccountId);
+                //List<Post> allPosts = await _unitOfWork.PostDAO.GetPosts();
+                return postByUsername;
+
+
+            }
+            catch (Exception ex)
+            {
+                string error = ErrorHelper.GetErrorString(ex.Message);
+                throw new Exception(error);
+            }
+        }
+
 
 
     }

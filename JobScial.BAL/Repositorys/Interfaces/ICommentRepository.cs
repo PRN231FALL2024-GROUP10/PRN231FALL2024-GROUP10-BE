@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobScial.DAL.Repositorys.Interfaces
+namespace JobScial.BAL.Repositorys.Interfaces
 {
     public interface ICommentRepository
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobScial.DAL.Repositorys.Interfaces
+namespace JobScial.BAL.Repositorys.Interfaces
 {
      public interface  IPostRepository
     {
@@ -27,5 +27,7 @@ namespace JobScial.DAL.Repositorys.Interfaces
 
         // Lấy tất cả bài viết
         Task<List<Post>> GetAllPostsAsync(HttpContext httpContext);
+
+        Task<List<Post>> GetPostByUserName(string username);
     }
 }

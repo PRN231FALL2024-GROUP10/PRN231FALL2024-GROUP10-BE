@@ -2,8 +2,8 @@
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Comments;
-using JobScial.DAL.Repositorys.Implementations;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Implementations;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -44,6 +44,19 @@ namespace JobScial.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [EnableQuery]
+        [HttpDelete("Post/DeletePost/{key}")]
+
+        public async Task<IActionResult> DeleteComment([FromRoute] int key)
+        {
+
+            await this._commentRepository.DeleteCommentAsync(key);
+            return Ok(new
+            {
+                Status = "Delete Comment Success"
+            });
         }
     }
 }

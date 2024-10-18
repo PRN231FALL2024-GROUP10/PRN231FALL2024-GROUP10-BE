@@ -3,7 +3,7 @@ using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Comments;
 using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,7 +14,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobScial.DAL.Repositorys.Implementations
+namespace JobScial.BAL.Repositorys.Implementations
 {
     public class CommentRepository : ICommentRepository
     {

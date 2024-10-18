@@ -1,6 +1,6 @@
 ﻿using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobScial.DAL.Repositorys.Implementations
+namespace JobScial.BAL.Repositorys.Implementations
 {
     public class PostCategoryRepository : IPostCategoryRepository
     {

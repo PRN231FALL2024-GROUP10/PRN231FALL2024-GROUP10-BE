@@ -34,5 +34,26 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+        public async Task DeletePostCategory(int? id)
+        {
+            try
+            {
+                var existing = await _dbContext.PostCategories.FindAsync(id);
+
+                if (existing != null)
+                {
+                    _dbContext.PostCategories.Remove(existing);
+                    await _dbContext.SaveChangesAsync();  // Lưu thay đổi vào database
+                }
+                else
+                {
+                    throw new Exception("existing not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

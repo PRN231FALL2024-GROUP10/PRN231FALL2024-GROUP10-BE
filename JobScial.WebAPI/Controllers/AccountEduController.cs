@@ -1,5 +1,5 @@
 ﻿using JobScial.BAL.DTOs.Accounts;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JobScial.DAL\JobScial.DAL.csproj" />
+    <ProjectReference Include="..\JobScial.BAL\JobScial.BAL.csproj" />
   </ItemGroup>
 
 </Project>

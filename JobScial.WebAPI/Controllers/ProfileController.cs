@@ -1,6 +1,6 @@
 ﻿using JobScial.BAL.DTOs.Profile;
 using JobScial.DAL.Infrastructures;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -2,7 +2,7 @@
 using JobScial.DAL.DAOs.Implements;
 using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;

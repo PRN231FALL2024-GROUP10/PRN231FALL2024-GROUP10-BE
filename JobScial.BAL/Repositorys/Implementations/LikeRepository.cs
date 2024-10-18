@@ -4,7 +4,7 @@ using JobScial.BAL.DTOs.Comments;
 using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobScial.DAL.Repositorys.Implementations
+namespace JobScial.BAL.Repositorys.Implementations
 {
     public class LikeRepository : IlikeRepository
     {

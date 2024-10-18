@@ -1,6 +1,5 @@
 ﻿using JobScial.DAL.DAOs.Interfaces;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

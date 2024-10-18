@@ -78,7 +78,30 @@ namespace JobScial.DAL.DAOs
             }
         }
         #endregion
+        public async Task<List<Post>> GetPostsByUserid(int userId)
+        {
+            try
+            {
+                List<Post> posts = await _dbContext.Posts
+                    .AsNoTracking()
+                    .Include(m => m.Likes)
+                    .Include(m => m.Comments)
+                    .Include(m => m.Job)
+                    .Include(m => m.PostPhotos)
+                    .Include(m => m.PostCategory)
+                    .Include(m => m.PostSkill)
+                        .ThenInclude(p => p.SkillCategory)
+                    .Where(p => p.CreatedBy == userId) // Lọc theo CreatedBy
+                    .ToListAsync();
 
+                return posts;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }

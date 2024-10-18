@@ -1,9 +1,7 @@
-﻿using JobScial.BAL.DTOs.Accounts;
-using JobScial.DAL.DAOs;
+﻿using JobScial.DAL.DAOs;
 using JobScial.DAL.DAOs.Implements;
 using JobScial.DAL.DAOs.Interfaces;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

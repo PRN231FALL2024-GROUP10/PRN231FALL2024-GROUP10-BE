@@ -20,8 +20,4 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\JobScial.BAL\JobScial.BAL.csproj" />
-  </ItemGroup>
-
 </Project>

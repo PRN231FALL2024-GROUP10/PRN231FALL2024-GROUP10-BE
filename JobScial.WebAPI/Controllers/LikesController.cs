@@ -2,7 +2,7 @@
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Comments;
 using JobScial.BAL.DTOs.Posts;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;

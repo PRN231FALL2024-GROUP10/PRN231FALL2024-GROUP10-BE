@@ -2,8 +2,8 @@
 using BMOS.BAL.Helpers;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.JWT;
-using JobScial.DAL.Repositorys.Implementations;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Implementations;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;

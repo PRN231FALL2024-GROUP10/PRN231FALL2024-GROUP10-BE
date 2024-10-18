@@ -2,7 +2,7 @@
 using BMOS.BAL.Helpers;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.DAL.Infrastructures;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;

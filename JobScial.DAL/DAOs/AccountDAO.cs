@@ -45,6 +45,19 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Account> GetAccountByName(string name)
+        {
+
+            try
+            {
+                return await this._dbContext.Accounts
+                    .FirstOrDefaultAsync(a => a.FullName.Contains(name));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public async Task AddNewAccount(Account account)
         {

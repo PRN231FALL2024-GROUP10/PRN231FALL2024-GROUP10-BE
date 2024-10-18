@@ -1,7 +1,7 @@
 ﻿using JobScial.BAL.DTOs.Accounts;
 using JobScial.DAL.Infrastructures;
 using JobScial.DAL.Models;
-using JobScial.DAL.Repositorys.Interfaces;
+using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace JobScial.DAL.Repositorys.Implementations
+namespace JobScial.BAL.Repositorys.Implementations
 {
     public class AccountExpRepository : IAccountExpRepository
     {

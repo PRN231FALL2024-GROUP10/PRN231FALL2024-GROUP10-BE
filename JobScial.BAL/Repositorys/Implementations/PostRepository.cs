@@ -53,6 +53,8 @@ namespace JobScial.BAL.Repositorys.Implementations
                     CreatedOn = DateTime.UtcNow,
                     CreatedBy = accountStaff.AccountId,
                     HasPhoto  = post.HasPhoto,
+                    GroupId = post.GroupId,
+                    PrivateLevel = post.PrivateLevel,
 
                 };
                 List<PostPhoto> postPhotosToSave = new List<PostPhoto>();
@@ -200,7 +202,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                 // Cập nhật thông tin bài viết
                 existingPost.Content = post.Content;
                 existingPost.HasPhoto = post.HasPhoto;
-
+                
 
                 await _unitOfWork.JobTitleDao.DeleteJobtile(existingPost.JobId);
                 await _unitOfWork.PostCategoryDA0.DeletePostCategory(existingPost.PostCategoryId);
@@ -289,19 +291,60 @@ namespace JobScial.BAL.Repositorys.Implementations
             throw new NotImplementedException();
         }
 
-        public async Task<List<Post>> GetAllPostsAsync(HttpContext httpContext)
+        public async Task<List<GetPostResponse>> GetAllPostsAsync(HttpContext httpContext)
         {
             try
             {
-               /* JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
-                string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
-                var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);*/
-                // Lấy tất cả bài post
+                // Retrieve all posts
                 List<Post> allPosts = await _unitOfWork.PostDAO.GetPosts();
-                return allPosts;
+                // Initialize a list for GetPostResponse objects
+                List<GetPostResponse> postResponses = new List<GetPostResponse>();
+
+                foreach (var post in allPosts)
+                {
+                    // Get post photos
+                    var postPhotos = await _unitOfWork.PostPhotoDAO.GetAllById(post.PostID);
+                    List<string> photoLinks = postPhotos.Select(photo => photo?.Link).Where(link => !string.IsNullOrEmpty(link)).ToList();
+
+                    // Get post skills
+                    var postSkills = await _unitOfWork.SkillCategoryDAO.GetAllById(post.PostID);
+                    List<int> skillCategoryIds = postSkills.Select(skill => skill.SkillCategoryId ?? 0).ToList();
+
+                    // Fetch skill categories by ID
+                    List<SkillCategory> skillCategories = new List<SkillCategory>();
+                    foreach (var skillCategoryId in skillCategoryIds)
+                    {
+                        var skillCategory = await _unitOfWork.SkillCategoryDAO.GetById(skillCategoryId);
+                        if (skillCategory != null)
+                        {
+                            skillCategories.Add(skillCategory);
+                        }
+                    }
+
+                    // Extract skill names
+                    List<string> skillNames = skillCategories.Select(skill => skill.Name).ToList();
+
+                    // Map post data to GetPostResponse object
+                    GetPostResponse getPostResponse = new GetPostResponse
+                    {
+                        Category = post.PostCategory?.Name,
+                        jobTitle = post.Job?.Name,
+                        Comments = post.Comments,
+                        Likes = post.Likes,
+                        Content = post.Content,
+                        Photo = photoLinks,
+                        Skill = skillNames
+                    };
+
+                    // Add response to the list
+                    postResponses.Add(getPostResponse);
+                }
+
+                return postResponses;
             }
             catch (Exception ex)
             {
+                // Log and rethrow the exception with a detailed error message
                 string error = ErrorHelper.GetErrorString(ex.Message);
                 throw new Exception(error);
             }

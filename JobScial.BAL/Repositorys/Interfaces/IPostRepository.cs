@@ -26,7 +26,7 @@ namespace JobScial.BAL.Repositorys.Interfaces
         Task<Post> GetPostByIdAsync(int postId);
 
         // Lấy tất cả bài viết
-        Task<List<Post>> GetAllPostsAsync(HttpContext httpContext);
+        Task<List<GetPostResponse>> GetAllPostsAsync(HttpContext httpContext);
 
         Task<List<Post>> GetPostByUserName(string username);
     }

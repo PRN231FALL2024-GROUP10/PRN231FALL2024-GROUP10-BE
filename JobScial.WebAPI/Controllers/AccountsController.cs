@@ -40,7 +40,7 @@ namespace JobScial.WebAPI.Controllers
         #endregion
         #region Register
         [HttpPost("Register")]
-        public async Task<IActionResult> Post([FromForm] RegisterRequest registerRequest)
+        public async Task<IActionResult> Post([FromBody] RegisterRequest registerRequest)
         {
             try
             {

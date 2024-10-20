@@ -68,12 +68,17 @@ namespace JobScial.WebAPI.Controllers
         [EnableQuery]
         public async Task<IActionResult> GetActivePosts()
         {
-            List<Post> products = await this._postRepository.GetAllPostsAsync(HttpContext);
-            if (products == null || !products.Any())
+            // Retrieve all posts, mapping to GetPostResponse
+            List<GetPostResponse> activePosts = await _postRepository.GetAllPostsAsync(HttpContext);
+
+            // Check if posts exist
+            if (activePosts == null || !activePosts.Any())
             {
                 return NotFound(new { Message = "No active posts found." });
             }
-            return Ok(products);
+
+            // Return the list of active posts
+            return Ok(activePosts);
         }
         [HttpPut("Post/{key}/UpdatePost")]
         //[PermissionAuthorize("Customer", "Store Owner")]

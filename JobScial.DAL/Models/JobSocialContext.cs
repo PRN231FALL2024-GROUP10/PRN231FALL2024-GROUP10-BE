@@ -353,6 +353,7 @@ public partial class JobSocialContext : DbContext
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.Reason).HasMaxLength(400);
             entity.Property(e => e.ReportId).HasColumnName("ReportID");
+            entity.Property(e => e.TargetId).HasColumnName("TargetID");
 
             entity.HasOne(d => d.ReportNavigation).WithMany()
                 .HasForeignKey(d => d.ReportId)

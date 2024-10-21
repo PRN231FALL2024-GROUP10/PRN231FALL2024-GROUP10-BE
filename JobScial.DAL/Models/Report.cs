@@ -10,6 +10,7 @@ public partial class Report
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
     public int? ReportId { get; set; }
+    public int? TargetId { get; set; }
 
     public string? Reason { get; set; }
 

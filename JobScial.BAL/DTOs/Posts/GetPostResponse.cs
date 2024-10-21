@@ -1,4 +1,5 @@
-﻿using JobScial.DAL.Models;
+﻿using JobScial.BAL.DTOs.Comments;
+using JobScial.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,9 @@ namespace JobScial.BAL.DTOs.Posts
         public string? jobTitle { get; set; }
         public string? Category { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public Account Account { get; set; }
+
+        public virtual ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
 
         public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
 

@@ -16,6 +16,7 @@ using GenZStyleAPP.BAL.Errors;
 using Azure;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Posts;
+using JobScial.BAL.DTOs.Comments;
 
 namespace JobScial.BAL.Repositorys.Implementations
 {
@@ -205,7 +206,8 @@ namespace JobScial.BAL.Repositorys.Implementations
                 
 
                 await _unitOfWork.JobTitleDao.DeleteJobtile(existingPost.JobId);
-                await _unitOfWork.PostCategoryDA0.DeletePostCategory(existingPost.PostCategoryId);
+                // ko cho cap nhap post category nha
+                //await _unitOfWork.PostCategoryDA0.DeletePostCategory(existingPost.PostCategoryId);
 
                 JobTitle jobTitle = new JobTitle
                 {
@@ -265,7 +267,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                 await _unitOfWork.PostCategoryDA0.AddPostCategory(postCategory);
                 await _unitOfWork.JobTitleDao.AddJobTitle(jobTitle);
                 existingPost.JobId = jobTitle.JobId;
-                existingPost.PostCategoryId = postCategory.PostCategoryId;
+                //existingPost.PostCategoryId = postCategory.PostCategoryId;
                 await _unitOfWork.PostDAO.UpdatePost(existingPost);
                 await _unitOfWork.CommitAsync();
 
@@ -324,16 +326,35 @@ namespace JobScial.BAL.Repositorys.Implementations
                     // Extract skill names
                     List<string> skillNames = skillCategories.Select(skill => skill.Name).ToList();
 
+                    List<CommentDto> comments = new List<CommentDto>();
+                    foreach (var comment in post.Comments)
+                    {
+                        if(comment.Status == 1)
+                        {
+                            CommentDto commentDto = new CommentDto();
+                            commentDto.CommentId = comment.CommentId;
+                            commentDto.PostId = comment.PostId;
+                            commentDto.Content = comment.Content;
+                            commentDto.CreatedOn = comment.CreatedOn;
+                            commentDto.Account = _unitOfWork.AccountDao.GetAll().Where(x => x.AccountId == comment.AccountId).FirstOrDefault();
+
+                            comments.Add(commentDto);
+                        }
+                    }
+
+                    Account account = _unitOfWork.AccountDao.GetAll().Where(x => x.AccountId == post.CreatedBy).FirstOrDefault();
+
                     // Map post data to GetPostResponse object
                     GetPostResponse getPostResponse = new GetPostResponse
                     {
                         Category = post.PostCategory?.Name,
                         jobTitle = post.Job?.Name,
-                        Comments = post.Comments,
+                        Comments = comments,
                         Likes = post.Likes,
                         Content = post.Content,
                         Photo = photoLinks,
-                        Skill = skillNames
+                        Skill = skillNames,
+                        Account = account
                     };
 
                     // Add response to the list

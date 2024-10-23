@@ -10,13 +10,14 @@ namespace JobScial.BAL.DTOs.Posts
 {
     public class GetPostResponse
     {
+        public int PostID { get; set; }
         public List<string>? Photo { get; set; }
 
         public string? Content { get; set; }
         public List<string>? Skill { get; set; }
         public string? jobTitle { get; set; }
         public string? Category { get; set; }
-
+        public DateTime? CreatedOn { get; set; }
         public Account Account { get; set; }
 
         public virtual ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();

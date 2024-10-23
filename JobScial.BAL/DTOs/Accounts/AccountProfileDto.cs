@@ -12,6 +12,7 @@ namespace JobScial.BAL.DTOs.Accounts
         public int AccountId { get; set; }
         public string Email { get; set; }
         public string FullName { get; set; }
+        public string Username { get; set; }
         // Thêm các thuộc tính khác cần thiết từ lớp Account
     }
 

@@ -21,6 +21,20 @@ namespace JobScial.WebAPI.Controllers
         {
             _accountRepository = accountRepository;
         }
+
+        [HttpGet("Accounts")]
+        public async Task<IActionResult> GetAccount()
+        {
+            try
+            {
+                return Ok(_accountRepository.Get());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
+            }
+        }
+
         #region Delete Account
 
         [HttpDelete("{accountId}")]

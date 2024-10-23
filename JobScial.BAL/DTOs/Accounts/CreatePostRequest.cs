@@ -21,7 +21,7 @@ namespace JobScial.BAL.DTOs.Accounts
         public List<IFormFile>? Link { get; set; } // Đảm bảo kiểu dữ liệu này
 
         public List<string>? Skills { get; set; }   // Thuộc tính về kỹ năng (nhiều lựa chọn)
-        public string? Category { get; set; }       // Thuộc tính về danh mục
+        public int? CategoryID { get; set; }       // Thuộc tính về danh mục
         public string? JobTitle { get; set; }       // Thuộc tính về tiêu đề công việc
 
     }

@@ -64,19 +64,24 @@ namespace JobScial.BAL.Repositorys.Implementations
 
                 // Xử lý kỹ năng của bài đăng
                 List<PostSkill> postSkillsToSave = new List<PostSkill>();
-                foreach (var skill in post.Skills)
+                if (post.Skills != null)
                 {
-                    var skillCategory = await _unitOfWork.SkillCategoryDAO.GetSkillCategoryByName(skill);
-                    if (skillCategory != null)
+                    foreach (var skill in post.Skills)
                     {
-                        PostSkill postSkill = new PostSkill
+                        var skillCategory = await _unitOfWork.SkillCategoryDAO.GetSkillCategoryByName(skill);
+                        if (skillCategory != null)
                         {
-                            PostId = post1.PostID,
-                            SkillCategoryId = skillCategory.SkillCategoryId,
-                        };
-                        postSkillsToSave.Add(postSkill);
+                            PostSkill postSkill = new PostSkill
+                            {
+                                PostId = post1.PostID,
+                                SkillCategoryId = skillCategory.SkillCategoryId,
+                            };
+                            postSkillsToSave.Add(postSkill);
+                        }
                     }
                 }
+
+                
                 // Lưu danh sách PostSkill
                 if (postSkillsToSave.Any())
                 {
@@ -92,10 +97,10 @@ namespace JobScial.BAL.Repositorys.Implementations
                 };
 
 
-                PostCategory postCategory = new PostCategory
-                {
-                   Name = post.Category,
-                };
+                //PostCategory postCategory = new PostCategory
+                //{
+                //   Name = post.Category,
+                //};
                 // Xử lý nếu có ảnh
                 if (post.HasPhoto == true && post.Link != null && post.Link.Any())
                 {
@@ -131,9 +136,9 @@ namespace JobScial.BAL.Repositorys.Implementations
                         await _unitOfWork.PostPhotoDAO.AddNewPostPhoto(postPhoto);  // Lưu từng PostPhoto
                     }
                 }
-                post1.PostCategory = postCategory;
+                post1.PostCategoryId = post.CategoryID;
                 post1.Job = jobTitle;
-                await _unitOfWork.PostCategoryDA0.AddPostCategory(postCategory);
+                //await _unitOfWork.PostCategoryDA0.AddPostCategory(postCategory);
                 await _unitOfWork.JobTitleDao.AddJobTitle(jobTitle);
                 await _unitOfWork.CommitAsync();
 
@@ -347,6 +352,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                     // Map post data to GetPostResponse object
                     GetPostResponse getPostResponse = new GetPostResponse
                     {
+                        PostID = post.PostID,
                         Category = post.PostCategory?.Name,
                         jobTitle = post.Job?.Name,
                         Comments = comments,
@@ -354,7 +360,8 @@ namespace JobScial.BAL.Repositorys.Implementations
                         Content = post.Content,
                         Photo = photoLinks,
                         Skill = skillNames,
-                        Account = account
+                        Account = account,
+                        CreatedOn = post.CreatedOn,
                     };
 
                     // Add response to the list

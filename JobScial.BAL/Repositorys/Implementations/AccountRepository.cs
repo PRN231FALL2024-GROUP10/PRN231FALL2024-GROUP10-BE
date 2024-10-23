@@ -179,6 +179,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                 AccountId = account.AccountId,
                 Email = account.Email,
                 FullName = account.FullName,
+                Username = account.FullNameSearch
             };
 
 
@@ -206,7 +207,8 @@ namespace JobScial.BAL.Repositorys.Implementations
             {
                 AccountId = account.AccountId,
                 Email = account.Email,
-                FullName = account.FullName
+                FullName = account.FullName,
+                Username = account.FullNameSearch
             };
 
             // Tạo và trả về DTO
@@ -304,6 +306,32 @@ namespace JobScial.BAL.Repositorys.Implementations
             _unitOfWork.AccountDao.Delete(account);
 
             _unitOfWork.Commit();
+        }
+
+        public async Task<List<AccountDto>> Get()
+        {
+            List<AccountDto> list = new List<AccountDto>();
+            var accounts = _unitOfWork.AccountDao.GetAll();
+           
+            foreach(var account in accounts)
+            {
+                if(account.Role != 0)
+                {
+                    var accountDto = new AccountDto
+                    {
+                        AccountId = account.AccountId,
+                        Email = account.Email,
+                        FullName = account.FullName,
+                        Username = account.FullNameSearch
+                    };
+
+                    list.Add(accountDto);
+                }
+                
+            }
+
+            return list;
+            
         }
     }
 }

@@ -17,6 +17,8 @@ using Azure;
 using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Posts;
 using JobScial.BAL.DTOs.Comments;
+using JobScial.BAL.DTOs.FireBase;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace JobScial.BAL.Repositorys.Implementations
 {
@@ -35,7 +37,7 @@ namespace JobScial.BAL.Repositorys.Implementations
             this._config = configuration;
         }
 
-        public async Task<CommonResponse> AddPostAsync(CreatePostRequest post, HttpContext httpContext )
+        public async Task<CommonResponse> AddPostAsync(CreatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext )
         {
             string loginSuccessMsg = _config["ResponseMessages:AuthenticationMsg:UnauthenticationMsg"];
             string CreatePostSuccessedMsg = _config["ResponseMessages:CommonMsg:CreatePostSuccessedMsg"];
@@ -107,14 +109,16 @@ namespace JobScial.BAL.Repositorys.Implementations
                     int index = 0;
                     foreach (var imageFile in post.Link)
                     {
-
+                        FileHelper.SetCredentials(fireBaseImage);
+                        FileStream fileStream = FileHelper.ConvertFormFileToStream(imageFile);
+                        Tuple<string, string> result = await FileHelper.UploadImage(fileStream, "Post");
                         // Lặp qua từng file trong danh sách file ảnh
 
                         // Lưu file và tạo đối tượng PostPhoto
                         var photo = new PostPhoto
                         {
                             PostId = post1.PostID,
-                            Link = await SaveFile(imageFile),  // Lưu file và lấy đường dẫn
+                            Link = result.Item1,  // Lưu file và lấy đường dẫn
                             Caption = "", // Chú thích cho ảnh
                             Index = index++, // Chỉ số của ảnh
                             Post = post1             // Liên kết PostPhoto với Post
@@ -183,7 +187,7 @@ namespace JobScial.BAL.Repositorys.Implementations
             return $"/Uploads/{fileName}";
         }
 
-        public async Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, HttpContext httpContext , int id)
+        public async Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext , int id)
         {
             string loginSuccessMsg = _config["ResponseMessages:AuthenticationMsg:UnauthenticationMsg"];
             string UpdatePostSuccessedMsg = _config["ResponseMessages:CommonMsg:UpdatePostSuccessedMsg"];
@@ -242,12 +246,14 @@ namespace JobScial.BAL.Repositorys.Implementations
                     }
                     foreach (var imageFile in post.Link)
                     {
+                        FileHelper.SetCredentials(fireBaseImage);
+                        FileStream fileStream = FileHelper.ConvertFormFileToStream(imageFile);
+                        Tuple<string, string> result = await FileHelper.UploadImage(fileStream, "Post");
 
-                        
-                            var photo = new PostPhoto
+                        var photo = new PostPhoto
                         {
                             PostId = existingPost.PostID,
-                            Link = await SaveFile(imageFile),  // Lưu file và lấy đường dẫn
+                            Link = result.Item1,  // Lưu file và lấy đường dẫn
                             Caption = "", // Chú thích cho ảnh
                             Index = index++, // Chỉ số của ảnh
                             Post = existingPost // Liên kết PostPhoto với Post
@@ -395,7 +401,86 @@ namespace JobScial.BAL.Repositorys.Implementations
             }
         }
 
+        public async Task<List<GetPostResponse>> GetAllPostsByUser(HttpContext httpContext)
+        {
+            JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
+            string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+            var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
+            
+            try 
+            { 
+            var allPosts = await _unitOfWork.PostDAO.GetPostsByUserid(accountStaff.AccountId);
+            List<GetPostResponse> postResponses = new List<GetPostResponse>();
 
+            foreach (var post in allPosts)
+            {
+                // Get post photos
+                var postPhotos = await _unitOfWork.PostPhotoDAO.GetAllById(post.PostID);
+                List<string> photoLinks = postPhotos.Select(photo => photo?.Link).Where(link => !string.IsNullOrEmpty(link)).ToList();
 
+                // Get post skills
+                var postSkills = await _unitOfWork.SkillCategoryDAO.GetAllById(post.PostID);
+                List<int> skillCategoryIds = postSkills.Select(skill => skill.SkillCategoryId ?? 0).ToList();
+
+                // Fetch skill categories by ID
+                List<SkillCategory> skillCategories = new List<SkillCategory>();
+                foreach (var skillCategoryId in skillCategoryIds)
+                {
+                    var skillCategory = await _unitOfWork.SkillCategoryDAO.GetById(skillCategoryId);
+                    if (skillCategory != null)
+                    {
+                        skillCategories.Add(skillCategory);
+                    }
+                }
+
+                // Extract skill names
+                List<string> skillNames = skillCategories.Select(skill => skill.Name).ToList();
+
+                List<CommentDto> comments = new List<CommentDto>();
+                foreach (var comment in post.Comments)
+                {
+                    if (comment.Status == 1)
+                    {
+                        CommentDto commentDto = new CommentDto();
+                        commentDto.CommentId = comment.CommentId;
+                        commentDto.PostId = comment.PostId;
+                        commentDto.Content = comment.Content;
+                        commentDto.CreatedOn = comment.CreatedOn;
+                        commentDto.Account = _unitOfWork.AccountDao.GetAll().Where(x => x.AccountId == comment.AccountId).FirstOrDefault();
+
+                        comments.Add(commentDto);
+                    }
+                }
+
+                Account account = _unitOfWork.AccountDao.GetAll().Where(x => x.AccountId == post.CreatedBy).FirstOrDefault();
+
+                // Map post data to GetPostResponse object
+                GetPostResponse getPostResponse = new GetPostResponse
+                {
+                    PostID = post.PostID,
+                    Category = post.PostCategory?.Name,
+                    jobTitle = post.Job?.Name,
+                    Comments = comments,
+                    Likes = post.Likes,
+                    Content = post.Content,
+                    Photo = photoLinks,
+                    Skill = skillNames,
+                    Account = account,
+                    CreatedOn = post.CreatedOn,
+                };
+
+                // Add response to the list
+                postResponses.Add(getPostResponse);
+            }
+
+            return postResponses;
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow the exception with a detailed error message
+                string error = ErrorHelper.GetErrorString(ex.Message);
+                throw new Exception(error);
+    }
+}
     }
 }

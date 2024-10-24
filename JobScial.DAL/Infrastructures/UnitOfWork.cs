@@ -24,6 +24,7 @@ namespace JobScial.DAL.Infrastructures
         private PostSkillDao _postSkillDao;
         private PostCategoryDAO _PostCategoryDao;
         private JobTitleDAO _JobTitleDAO;
+        private GroupDAO _groupDAO;
 
 
 
@@ -75,6 +76,17 @@ namespace JobScial.DAL.Infrastructures
                     _JobTitleDAO = new JobTitleDAO(_dbContext);
                 }
                 return _JobTitleDAO;
+            }
+        }
+        public GroupDAO groupDAO
+        {
+            get
+            {
+                if (_groupDAO == null)
+                {
+                    _groupDAO = new GroupDAO(_dbContext);
+                }
+                return _groupDAO;
             }
         }
 

@@ -333,5 +333,52 @@ namespace JobScial.BAL.Repositorys.Implementations
             return list;
             
         }
+
+        public async Task<bool> BanAccount(int accountId)
+        {
+            var account = await _unitOfWork.AccountDAO.GetAccountById(accountId);
+
+            if (account == null)
+            {
+                return false; // Return false if account not found
+            }
+
+            account.Role = 0;
+
+            try
+            {
+                await _unitOfWork.AccountDAO.BanAccount(account);
+                await _unitOfWork.CommitAsync();
+                return true; // Successfully banned
+            }
+            catch
+            {
+                // Optionally log the error here (if you have a logging mechanism)
+                return false; // Return false in case of failure
+            }
+        }
+        public async Task<bool> UnlockAccount(int accountId)
+        {
+            var account = await _unitOfWork.AccountDAO.GetAccountById(accountId);
+
+            if (account == null)
+            {
+                return false; // Return false if account not found
+            }
+
+            account.Role = 1;
+
+            try
+            {
+                await _unitOfWork.AccountDAO.BanAccount(account);
+                await _unitOfWork.CommitAsync();
+                return true; // Successfully banned
+            }
+            catch
+            {
+                // Optionally log the error here (if you have a logging mechanism)
+                return false; // Return false in case of failure
+            }
+        }
     }
 }

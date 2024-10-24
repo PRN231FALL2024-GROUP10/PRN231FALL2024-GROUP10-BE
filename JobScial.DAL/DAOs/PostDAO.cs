@@ -60,7 +60,7 @@ namespace JobScial.DAL.DAOs
                 return posts;
 
             }
-            catch (Exception ex)
+            catch (Exception ex)   
             {
                 throw new Exception(ex.Message);
             }

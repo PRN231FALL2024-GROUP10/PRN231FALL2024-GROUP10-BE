@@ -45,6 +45,19 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Account> GetAccountById(int id)
+        {
+
+            try
+            {
+                return await this._dbContext.Accounts
+                    .SingleOrDefaultAsync(a => a.AccountId.Equals(id));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<Account> GetAccountByName(string name)
         {
 
@@ -64,6 +77,21 @@ namespace JobScial.DAL.DAOs
             try
             {
                 await _dbContext.AddAsync(account);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task BanAccount(Account account)
+        {
+            try
+            {
+                _dbContext.Accounts.Attach(account);
+
+                _dbContext.Entry(account).Property(a => a.Role).IsModified = true;
+
+
             }
             catch (Exception ex)
             {

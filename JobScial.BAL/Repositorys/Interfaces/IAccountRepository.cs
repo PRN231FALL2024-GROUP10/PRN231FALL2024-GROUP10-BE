@@ -16,5 +16,10 @@ namespace JobScial.BAL.Repositorys.Interfaces
         public Task<GetAccountResponse> Register(RegisterRequest registerRequest);
         public void DeleteAccount(int accountId);
         public Task<List<AccountDto>> Get();
+
+        public Task<bool> BanAccount(int accountId);
+
+        public Task<bool> UnlockAccount(int accountId);
+
     }
 }

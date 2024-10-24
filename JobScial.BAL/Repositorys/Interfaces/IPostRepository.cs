@@ -1,5 +1,6 @@
 ﻿using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Accounts;
+using JobScial.BAL.DTOs.FireBase;
 using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
 using Microsoft.AspNetCore.Http;
@@ -14,10 +15,10 @@ namespace JobScial.BAL.Repositorys.Interfaces
      public interface  IPostRepository
     {
         // Thêm bài viết mới
-        Task<CommonResponse> AddPostAsync(CreatePostRequest post, HttpContext httpContext);
+        Task<CommonResponse> AddPostAsync(CreatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext);
 
         // Sửa bài viết
-        Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, HttpContext httpContext, int id);
+        Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext, int id);
 
         // Xóa bài viết theo id
         Task DeletePostAsync(int postId);
@@ -27,6 +28,7 @@ namespace JobScial.BAL.Repositorys.Interfaces
 
         // Lấy tất cả bài viết
         Task<List<GetPostResponse>> GetAllPostsAsync(HttpContext httpContext);
+        Task<List<GetPostResponse>> GetAllPostsByUser(HttpContext httpContext);
 
         Task<List<Post>> GetPostByUserName(string username);
     }

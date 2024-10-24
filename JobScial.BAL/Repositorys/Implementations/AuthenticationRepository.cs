@@ -36,6 +36,7 @@ namespace JobScial.BAL.Repositorys.Implementations
             {
                 //var account = await _unitOfWork.AccountDAO.GetAccountByEmailAndPasswordAsync(request.Email, StringHelper.EncryptData(request.PasswordHash.Trim()));
                 var account = await _unitOfWork.AccountDAO.GetAccountByEmail(request.Email);
+                
                 if (account == null)
                 {
                     throw new BadRequestException("Email or password is invalid.");
@@ -49,6 +50,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                 
 
                 var resultLogin = await GenerateToken(loginResponse, jwtAuth, account);
+                resultLogin.Image = account.Image;
                 return resultLogin;
             }
             catch (BadRequestException ex)

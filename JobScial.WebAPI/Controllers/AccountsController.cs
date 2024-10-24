@@ -74,5 +74,67 @@ namespace JobScial.WebAPI.Controllers
             }
         }
         #endregion
+        [HttpPost("Account/BanAccount/{Id}")]
+        [EnableQuery]
+        public async Task<IActionResult> BanAccount(int Id)
+        {
+            // Validate the input
+            if (Id <= 0)
+            {
+                return BadRequest(new { Success = false, Message = "Invalid account ID." });
+            }
+
+            try
+            {
+                // Attempt to ban the account
+                bool isBanned = await _accountRepository.BanAccount(Id);
+
+                if (isBanned)
+                {
+                    return Ok(new { Success = true, Message = "Account banned successfully." });
+                }
+                else
+                {
+                    return NotFound(new { Success = false, Message = $"Account with ID {Id} not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (optional: add logging logic here)
+                return StatusCode(500, new { Success = false, Message = $"An error occurred: {ex.Message}" });
+            }
+        }
+        [HttpPost("Account/UnlockAccount/{Id}")]
+        public async Task<IActionResult> UnlockAccount(int Id)
+        {
+            // Validate the input
+            if (Id <= 0)
+            {
+                return BadRequest(new { Success = false, Message = "Invalid account ID." });
+            }
+
+            try
+            {
+
+                // Attempt to ban the account
+                bool isBanned = await _accountRepository.UnlockAccount(Id);
+
+                if (isBanned)
+                {
+                    return Ok(new { Success = true, Message = "Account unlocked successfully." });
+                }
+                else
+                {
+                    return NotFound(new { Success = false, Message = $"Account with ID {Id} not found." });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Handle the error and return a 500 status code
+                return StatusCode(500, new { Success = false, Message = $"An error occurred: {ex.Message}" });
+            }
+        }
     }
 }

@@ -5,8 +5,10 @@ using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
 using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using JobScial.BAL.DTOs.FireBase;
 
 namespace JobScial.WebAPI.Controllers
 {
@@ -14,12 +16,17 @@ namespace JobScial.WebAPI.Controllers
     {
         private IPostRepository _postRepository;
         private readonly ILogger<PostsController> _logger;
+        private IOptions<FireBaseImage> _firebaseImageOptions;
 
 
-        public PostsController(IPostRepository postRepository, ILogger<PostsController> logger)
+        public PostsController(IPostRepository postRepository, 
+            ILogger<PostsController> logger,
+            IOptions<FireBaseImage> firebaseImageOptions)
         {
             _postRepository = postRepository;
             _logger = logger;
+            _firebaseImageOptions = firebaseImageOptions;
+
         }
 
 
@@ -39,7 +46,7 @@ namespace JobScial.WebAPI.Controllers
                 }*/
                 // Kiểm tra xem có dữ liệu trong createPostRequest không
 
-                commonResponse = await this._postRepository.AddPostAsync(createPostRequest, HttpContext);
+                commonResponse = await this._postRepository.AddPostAsync(createPostRequest,_firebaseImageOptions.Value , HttpContext);
                 switch (commonResponse.Status)
                 {
                     case 200:
@@ -80,6 +87,22 @@ namespace JobScial.WebAPI.Controllers
             // Return the list of active posts
             return Ok(activePosts);
         }
+        [HttpGet("Post/PostByUser")]
+        [EnableQuery]
+        public async Task<IActionResult> GetActivePostsByUser()
+        {
+            // Retrieve all posts, mapping to GetPostResponse
+            List<GetPostResponse> activePosts = await _postRepository.GetAllPostsByUser(HttpContext);
+
+            // Check if posts exist
+            if (activePosts == null || !activePosts.Any())
+            {
+                return NotFound(new { Message = "No active posts found." });
+            }
+
+            // Return the list of active posts
+            return Ok(activePosts);
+        }
         [HttpPut("Post/{key}/UpdatePost")]
         //[PermissionAuthorize("Customer", "Store Owner")]
         public async Task<IActionResult> Put([FromRoute] int key, [FromForm] UpdatePostRequest updatePostRequest)
@@ -89,7 +112,7 @@ namespace JobScial.WebAPI.Controllers
             try
             {
             
-                commonResponse = await this._postRepository.UpdatePostAsync(updatePostRequest, HttpContext, key);
+                commonResponse = await this._postRepository.UpdatePostAsync(updatePostRequest, _firebaseImageOptions.Value, HttpContext, key);
                 switch (commonResponse.Status)
                 {
                     case 200:

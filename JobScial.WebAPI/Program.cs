@@ -16,6 +16,7 @@ using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 
 using System.Reflection.Emit;
+using JobScial.BAL.DTOs.FireBase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +68,8 @@ builder.Services.AddScoped<IAccountCertRepository, AccountCertRepository>();
 builder.Services.AddScoped<IAccountEduRepository, AccountEduRepository>();
 builder.Services.AddScoped<IAccountExpRepository, AccountExpRepository>();
 builder.Services.AddScoped<IAccountSkillRepository, AccountSkillRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.Configure<FireBaseImage>(builder.Configuration.GetSection("FireBaseImage"));
 
 #region JWT 
 builder.Services.AddSwaggerGen(options =>

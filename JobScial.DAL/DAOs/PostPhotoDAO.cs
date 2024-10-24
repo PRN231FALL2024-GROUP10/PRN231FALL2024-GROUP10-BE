@@ -71,12 +71,13 @@ namespace JobScial.DAL.DAOs
                     .Select(x => new
                     {
                         x.PostId,
-                        
+                        x.Link,
                     })
                     .Distinct() // Loại bỏ các bản ghi trùng lặp
                     .Select(x => new PostPhoto // Tạo lại đối tượng NewsTagg mới từ các thuộc tính
                     {
                         PostId = x.PostId,
+                        Link = x.Link,
                     })
                     .ToListAsync();
             }

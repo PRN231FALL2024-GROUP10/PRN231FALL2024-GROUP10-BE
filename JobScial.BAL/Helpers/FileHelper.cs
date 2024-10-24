@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Firebase.Auth;
+using Firebase.Storage;
+using JobScial.BAL.DTOs.FireBase;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +17,7 @@ namespace BMOS.BAL.Helpers
         private static string AuthEmail;
         private static string AuthPassword;
 
-        /*public static void SetCredentials(FireBaseImage fireBaseImage)
+        public static void SetCredentials(FireBaseImage fireBaseImage)
         {
             ApiKey = fireBaseImage.ApiKey;
             Bucket = fireBaseImage.Bucket;
@@ -106,7 +110,7 @@ namespace BMOS.BAL.Helpers
                 throw new Exception(ex.Message, ex);
             }
         }
-        #endregion*/
+        #endregion
 
         #region HaveSupportedFileType
         public static bool HaveSupportedFileType(string fileName)

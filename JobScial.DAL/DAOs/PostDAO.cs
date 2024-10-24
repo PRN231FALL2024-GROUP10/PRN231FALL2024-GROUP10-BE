@@ -49,6 +49,7 @@ namespace JobScial.DAL.DAOs
 
                 List<Post> posts = await _dbContext.Posts
                     .AsNoTracking()
+                    .Where(p => p.PrivateLevel != 0) 
                     .Include(m => m.Likes)
                     .Include(m => m.Comments)
                     .Include(m => m.Job)
@@ -84,6 +85,7 @@ namespace JobScial.DAL.DAOs
             {
                 List<Post> posts = await _dbContext.Posts
                     .AsNoTracking()
+                    .Where(p => p.PrivateLevel != 0)
                     .Include(m => m.Likes)
                     .Include(m => m.Comments)
                     .Include(m => m.Job)

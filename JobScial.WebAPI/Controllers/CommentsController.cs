@@ -47,7 +47,7 @@ namespace JobScial.WebAPI.Controllers
         }
 
         [EnableQuery]
-        [HttpDelete("Post/DeletePost/{key}")]
+        [HttpDelete("Post/DeleteComment/{key}")]
 
         public async Task<IActionResult> DeleteComment([FromRoute] int key)
         {

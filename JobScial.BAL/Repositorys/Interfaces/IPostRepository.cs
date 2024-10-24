@@ -21,7 +21,7 @@ namespace JobScial.BAL.Repositorys.Interfaces
         Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext, int id);
 
         // Xóa bài viết theo id
-        Task DeletePostAsync(int postId);
+        Task<bool> DeletePostAsync(int postId);
 
         // Lấy bài viết theo id
         Task<Post> GetPostByIdAsync(int postId);

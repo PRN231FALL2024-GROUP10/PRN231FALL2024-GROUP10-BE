@@ -295,8 +295,28 @@ namespace JobScial.BAL.Repositorys.Implementations
             return commonResponse;
         }
 
-        public async Task DeletePostAsync(int postId)
+        public async Task<bool> DeletePostAsync(int postId)
         {
+            var post = await _unitOfWork.PostDAO.GetPostById(postId);
+            // Check if the post exists before updating
+            if (post == null)
+            {
+                return false; // Return false if the post doesn't exist
+            }
+            post.PrivateLevel = 0;
+            try
+            {
+                await _unitOfWork.PostDAO.UpdatePost(post);
+                await _unitOfWork.CommitAsync();
+                return true; // Return true on success
+
+            }
+            catch (Exception ex)
+            {
+                // Log the error for debugging purposes
+                Console.WriteLine("Error deleting post: " + ex.Message);
+                return false; // Return false in case of an unexpected error
+            }
         }
 
         public async Task<Post> GetPostByIdAsync(int postId)

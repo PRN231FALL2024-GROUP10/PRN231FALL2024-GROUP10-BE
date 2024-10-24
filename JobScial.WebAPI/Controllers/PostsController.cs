@@ -168,6 +168,16 @@ namespace JobScial.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #region 
+        [EnableQuery]
+        [HttpDelete("Post/DeletePost/{id}")]
+        //[PermissionAuthorize("Store Owner")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _postRepository.DeletePostAsync(id);
+            return NoContent();
+        }
+        #endregion
     }
 }
 

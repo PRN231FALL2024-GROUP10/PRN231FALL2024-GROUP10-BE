@@ -1,4 +1,5 @@
-﻿using JobScial.BAL.DTOs.Accounts;
+﻿using GenZStyleAPP.BAL.Errors;
+using JobScial.BAL.DTOs.Accounts;
 using JobScial.BAL.DTOs.Profile;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace JobScial.BAL.Repositorys.Interfaces
         public Task<bool> BanAccount(int accountId);
 
         public Task<bool> UnlockAccount(int accountId);
+
+        public Task<CommonResponse> AddNewAccount(AddNewAccount addNewAccount);
+        public Task<CommonResponse> UpdateAccount(int AccountId ,UpdateAccountRequest updateAccountRequest);
 
     }
 }

@@ -73,7 +73,7 @@ public partial class JobSocialContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Email).HasName("PK__Account__A9D10535370AE998");
+            entity.HasKey(e => e.AccountId).HasName("PK__Account__A9D10535370AE998");
 
             entity.ToTable("Account");
 

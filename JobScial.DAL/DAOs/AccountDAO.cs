@@ -98,6 +98,19 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+        #region Update Account
+        public async Task UpdateAccount(Account account)
+        {
+            try
+            {
+                _dbContext.Entry<Account>(account).State = EntityState.Modified;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        #endregion
     }
 
 }

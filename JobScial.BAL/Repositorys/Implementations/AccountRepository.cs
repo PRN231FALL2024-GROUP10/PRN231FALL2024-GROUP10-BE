@@ -315,19 +315,19 @@ namespace JobScial.BAL.Repositorys.Implementations
            
             foreach(var account in accounts)
             {
-                if(account.Role != 0)
-                {
-                    var accountDto = new AccountDto
-                    {
-                        AccountId = account.AccountId,
-                        Email = account.Email,
-                        FullName = account.FullName,
-                        Username = account.FullNameSearch
-                    };
 
-                    list.Add(accountDto);
-                }
-                
+                var accountDto = new AccountDto
+                {
+                    AccountId = account.AccountId,
+                    Email = account.Email,
+                    FullName = account.FullName,
+                    Username = account.FullNameSearch,
+                    Role = (int)account.Role
+                };
+
+                list.Add(accountDto);
+
+
             }
 
             return list;

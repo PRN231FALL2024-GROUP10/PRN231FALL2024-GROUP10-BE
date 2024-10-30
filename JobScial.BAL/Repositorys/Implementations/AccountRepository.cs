@@ -13,17 +13,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GenZStyleAPP.BAL.Errors;
+using Azure;
+using Microsoft.Extensions.Configuration;
+using JobScial.BAL.DTOs.Posts;
 
 namespace JobScial.BAL.Repositorys.Implementations
 {
     public class AccountRepository : IAccountRepository
     {
         private UnitOfWork _unitOfWork;
+        private readonly IConfiguration _config;
+
         //private IMapper _mapper;
-        public AccountRepository(IUnitOfWork unitOfWork)
+        public AccountRepository(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = (UnitOfWork)unitOfWork;
-
+            _config = configuration;
         }
         private List<AccountCertificateDto> GetAccountCertificate(Account account)
         {
@@ -379,6 +385,61 @@ namespace JobScial.BAL.Repositorys.Implementations
                 // Optionally log the error here (if you have a logging mechanism)
                 return false; // Return false in case of failure
             }
+        }
+
+        public async Task<CommonResponse> AddNewAccount(AddNewAccount addNewAccount)
+        {
+            string AddAccountSuccessedMsg = _config["ResponseMessages:CommonMsg:AddAccountSuccessedMsg"];
+            CommonResponse commonResponse = new CommonResponse();
+
+            Account account = new Account
+            {
+                CreatedOn = DateTime.Now,
+                Email = addNewAccount.Email,
+                DoB = addNewAccount.DoB,
+                FullName = addNewAccount.FullName,
+                FullNameSearch = addNewAccount.FullNameSearch,
+                Gender = addNewAccount.Gender,
+                Password = addNewAccount.Password,
+                Role = 3
+            };
+            
+            
+            await _unitOfWork.AccountDAO.AddNewAccount(account);
+            await _unitOfWork.CommitAsync();
+
+            commonResponse.Data = account;
+            commonResponse.Status = 200;
+            commonResponse.Message = AddAccountSuccessedMsg;
+            return commonResponse;
+        }
+
+        public async Task<CommonResponse> UpdateAccount(int accountId,UpdateAccountRequest updateAccountRequest)
+        {
+            string UploadImageSuccessedMsg = _config["ResponseMessages:CommonMsg:UploadImageSuccessedMsg"];
+
+            CommonResponse commonResponse = new CommonResponse();
+            var account = await _unitOfWork.AccountDAO.GetAccountById(accountId);
+            if (account == null)
+            {
+                throw new NotFoundException("account does not exist in system");
+            }
+
+            account.FullName = updateAccountRequest.FullName;
+            account.FullNameSearch = updateAccountRequest.FullNameSearch;
+            account.Gender = updateAccountRequest.Gender;
+            account.Password = updateAccountRequest.Password;
+            account.DoB = updateAccountRequest.DoB;
+            account.Email = updateAccountRequest.Email;
+            
+
+            await _unitOfWork.AccountDAO.UpdateAccount(account);
+            await this._unitOfWork.CommitAsync();
+
+            commonResponse.Data = account;
+            commonResponse.Status = 200;
+            commonResponse.Message = "Update Post Successfully";
+            return commonResponse;
         }
     }
 }

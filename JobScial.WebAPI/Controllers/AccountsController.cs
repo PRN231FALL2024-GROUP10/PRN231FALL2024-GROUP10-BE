@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using GenZStyleAPP.BAL.Errors;
+using JobScial.BAL.DTOs.Posts;
 
 namespace JobScial.WebAPI.Controllers
 {
@@ -103,6 +105,64 @@ namespace JobScial.WebAPI.Controllers
                 // Log the exception (optional: add logging logic here)
                 return StatusCode(500, new { Success = false, Message = $"An error occurred: {ex.Message}" });
             }
+        }
+        [HttpPost("Account/CreateNewAccount")]
+        [EnableQuery]
+        //[PermissionAuthorize("Staff")]
+        public async Task<IActionResult> AddNewAccount([FromBody] AddNewAccount addNewAccount)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+            try
+            {
+
+                commonResponse = await this._accountRepository.AddNewAccount(addNewAccount);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "Add Account Success");
+                    //return Ok(commonResponse);
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+/*            catch (Exception ex)
+            {
+                // Xử lý các ngoại lệ khác
+                return StatusCode(500, "Internal Server Error");
+            }*/
+
+        }
+        [HttpPut("Account/{key}/UpdateAccount")]
+        [EnableQuery]
+        //[PermissionAuthorize("Customer", "Store Owner")]
+        public async Task<IActionResult> Put([FromRoute] int key, [FromBody] UpdateAccountRequest updateAccountRequest)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+
+            try
+            {
+
+                commonResponse = await this._accountRepository.UpdateAccount(key, updateAccountRequest);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "Update Account Success");
+                    //return Ok(commonResponse);
+
+                    default:
+                        return StatusCode(500, commonResponse);
+                        
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
         [HttpPost("Account/UnlockAccount/{Id}")]
         public async Task<IActionResult> UnlockAccount(int Id)

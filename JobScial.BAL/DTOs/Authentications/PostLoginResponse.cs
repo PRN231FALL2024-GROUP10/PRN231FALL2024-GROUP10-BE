@@ -18,7 +18,7 @@ namespace JobScial.BAL.DTOs.Authentications
 
         public int? Gender { get; set; }
 
-        public int? Role { get; set; }
+        public string? Role { get; set; }
 
         public DateTime? CreatedOn { get; set; }
 

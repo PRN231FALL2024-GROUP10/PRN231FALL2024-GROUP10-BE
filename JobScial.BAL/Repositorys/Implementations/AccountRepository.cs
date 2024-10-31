@@ -438,7 +438,7 @@ namespace JobScial.BAL.Repositorys.Implementations
 
             commonResponse.Data = account;
             commonResponse.Status = 200;
-            commonResponse.Message = "Update Post Successfully";
+            commonResponse.Message = "Update Account Successfully";
             return commonResponse;
         }
     }

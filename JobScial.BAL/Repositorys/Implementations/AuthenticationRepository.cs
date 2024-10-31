@@ -45,9 +45,14 @@ namespace JobScial.BAL.Repositorys.Implementations
                 var loginResponse = new PostLoginResponse();
                 loginResponse.AccountId = account.AccountId;
                 loginResponse.Email = account.Email;
-                loginResponse.Role = account.Role;
                 loginResponse.FullName = account.FullName;
-                
+                if (account.Role == 1)
+                {
+                    loginResponse.Role = "Admin";
+                }else if (account.Role == 3) 
+                {
+                    loginResponse.Role = "User";
+                }
 
                 var resultLogin = await GenerateToken(loginResponse, jwtAuth, account);
                 resultLogin.Image = account.Image;
@@ -78,7 +83,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                  new Claim(JwtRegisteredClaimNames.Sub, response.Email),
                  new Claim(JwtRegisteredClaimNames.Email, response.Email),
                  new Claim(JwtRegisteredClaimNames.Name, response.FullName),
-                 //new Claim("Role", response.Role),
+                 new Claim("Role", response.Role),
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              });
 

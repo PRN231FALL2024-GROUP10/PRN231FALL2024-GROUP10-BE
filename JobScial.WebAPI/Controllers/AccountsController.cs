@@ -11,17 +11,25 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Posts;
+using Microsoft.AspNetCore.Identity;
+using Azure;
+using JobScial.WebAPI.Models;
+using JobScial.BAL.Repositorys.Implementations;
 
 namespace JobScial.WebAPI.Controllers
 {
     public class AccountsController : ODataController 
     {
+        private readonly UserManager<IdentityUser> _userManager;
         //private IValidator<RegisterRequest> _registerValidator;
         private IAccountRepository _accountRepository;
+        private  IEmailRepository _emailRepository;
 
-        public AccountsController(IAccountRepository accountRepository, IUnitOfWork unitOfWork)
+        public AccountsController(UserManager<IdentityUser> userManager,IAccountRepository accountRepository, IUnitOfWork unitOfWork, IEmailRepository emailRepository)
         {
             _accountRepository = accountRepository;
+            _emailRepository = emailRepository;
+            _userManager = userManager;
         }
 
         [HttpGet("Accounts")]
@@ -36,7 +44,19 @@ namespace JobScial.WebAPI.Controllers
                 return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
             }
         }
-
+        [HttpGet("accounts/{Id}")]
+        public async Task<IActionResult> GetDetailsAccountById([FromRoute] int Id)
+        {
+            try
+            {
+                var account = await _accountRepository.GetProfileById(Id);
+                return Ok(account);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
+            }
+        }
         #region Delete Account
 
         [HttpDelete("{accountId}")]
@@ -60,15 +80,28 @@ namespace JobScial.WebAPI.Controllers
         {
             try
             {
-                /*ValidationResult validationResult = await _registerValidator.ValidateAsync(registerRequest);
-                if (!validationResult.IsValid)
+                IdentityUser user = new()
                 {
-                    string error = ErrorHelper.GetErrorsString(validationResult);
-                    throw new BadRequestException(error);
-                }*/
+                    Email = registerRequest.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = registerRequest.FullName,
+                    TwoFactorEnabled = true
+                };
+                //Add Token to Verify the email....
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                // Sử dụng giao thức HTTPS với domain trên Azure
+                //var scheme = "https";
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Accounts", new { token, email = user.Email }, Request.Scheme);
+                var message = new JobScial.BAL.Models.Message(new string[] { user.Email! }, "Confirmation email link", confirmationLink!);
+                _emailRepository.SendEmail(message);
                 GetAccountResponse customer = await this._accountRepository
                 .Register(registerRequest);
-                return Ok(customer);
+                
+                return Ok(new
+                {
+                    Status = $"User created & Email sent to {customer.Email} Successfully",
+                    Data = customer
+                });
             }
             catch (Exception ex)
             {
@@ -76,6 +109,24 @@ namespace JobScial.WebAPI.Controllers
             }
         }
         #endregion
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _accountRepository.GetProfileByEmail(email);
+            if (user != null)
+            {
+
+                var viewResult = new ViewResult
+                {
+                    ViewName = "EmailConfirmationSuccess" // Tên view bạn muốn trả về
+                };
+                return viewResult;
+
+
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                       new JobScial.WebAPI.Models.Response { Status = "Error", Message = "This User Doesnot exist!" });
+        }
         [HttpPost("Account/BanAccount/{Id}")]
         [EnableQuery]
         public async Task<IActionResult> BanAccount(int Id)

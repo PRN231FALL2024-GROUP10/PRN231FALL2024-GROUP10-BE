@@ -12,11 +12,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.Edm;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
-
 using System.Reflection.Emit;
 using JobScial.BAL.DTOs.FireBase;
+using JobScial.BAL.Models;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +58,7 @@ builder.Services.AddDbContext<JobSocialContext>(options =>
 
 
 //Dependency Injections
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
 builder.Services.AddScoped<IDbFactory, DbFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -67,6 +72,7 @@ builder.Services.AddScoped<ISharedRepository, SharedRepository>();
 builder.Services.AddScoped<IAccountCertRepository, AccountCertRepository>();
 builder.Services.AddScoped<IAccountEduRepository, AccountEduRepository>();
 builder.Services.AddScoped<IAccountExpRepository, AccountExpRepository>();
+builder.Services.AddScoped<EmailConfiguration>();
 builder.Services.AddScoped<IAccountSkillRepository, AccountSkillRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.Configure<FireBaseImage>(builder.Configuration.GetSection("FireBaseImage"));
@@ -159,7 +165,19 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader(); // Cho phép tất cả các header
     });
 });
-
+var configuration = builder.Configuration;
+//Add Config for Required Email
+builder.Services.Configure<IdentityOptions>(
+opts => opts.SignIn.RequireConfirmedEmail = true
+    );
+builder.Services.AddControllersWithViews();
+//Add Email Configs
+var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+// For Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<JobSocialContext>()
+                .AddDefaultTokenProviders();
 
 
 var app = builder.Build();

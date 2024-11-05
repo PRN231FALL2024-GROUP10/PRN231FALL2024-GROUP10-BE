@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity;
 using Azure;
 using JobScial.WebAPI.Models;
 using JobScial.BAL.Repositorys.Implementations;
+using JobScial.BAL.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace JobScial.WebAPI.Controllers
 {
@@ -31,7 +33,7 @@ namespace JobScial.WebAPI.Controllers
             _emailRepository = emailRepository;
             _userManager = userManager;
         }
-
+        [PermissionAuthorize("Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("Accounts")]
         public async Task<IActionResult> GetAccount()
         {
@@ -60,6 +62,7 @@ namespace JobScial.WebAPI.Controllers
         #region Delete Account
 
         [HttpDelete("{accountId}")]
+        [PermissionAuthorize("Admin")]
         public async Task<IActionResult> DeleteAccount([FromRoute] int accountId)
         {
             try
@@ -128,6 +131,7 @@ namespace JobScial.WebAPI.Controllers
                        new JobScial.WebAPI.Models.Response { Status = "Error", Message = "This User Doesnot exist!" });
         }
         [HttpPost("Account/BanAccount/{Id}")]
+        [PermissionAuthorize("Admin")]
         [EnableQuery]
         public async Task<IActionResult> BanAccount(int Id)
         {
@@ -159,6 +163,7 @@ namespace JobScial.WebAPI.Controllers
         }
         [HttpPost("Account/CreateNewAccount")]
         [EnableQuery]
+        [PermissionAuthorize("Admin")]
         //[PermissionAuthorize("Staff")]
         public async Task<IActionResult> AddNewAccount([FromBody] AddNewAccount addNewAccount)
         {
@@ -188,6 +193,7 @@ namespace JobScial.WebAPI.Controllers
 
         }
         [HttpPut("Account/{key}/UpdateAccount")]
+        [PermissionAuthorize("Admin")]
         [EnableQuery]
         //[PermissionAuthorize("Customer", "Store Owner")]
         public async Task<IActionResult> Put([FromRoute] int key, [FromBody] UpdateAccountRequest updateAccountRequest)
@@ -216,6 +222,8 @@ namespace JobScial.WebAPI.Controllers
 
         }
         [HttpPost("Account/UnlockAccount/{Id}")]
+        [PermissionAuthorize("Admin")]
+
         public async Task<IActionResult> UnlockAccount(int Id)
         {
             // Validate the input

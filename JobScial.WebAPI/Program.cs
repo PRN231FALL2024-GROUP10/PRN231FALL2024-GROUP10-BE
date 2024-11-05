@@ -15,7 +15,6 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.Edm;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using System.Reflection.Emit;
 using JobScial.BAL.DTOs.FireBase;
@@ -105,7 +104,7 @@ new OpenApiSecurityRequirement()
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "GenZStyle Store Application API",
+        Title = "JobSocial Store Application API",
         Description = "JWT Authentication API"
     });
 
@@ -143,7 +142,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters()
+    options.TokenValidationParameters = new TokenValidationParameters() 
     {
         ValidateIssuer = false,
         ValidateAudience = false,
@@ -196,6 +195,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
+
 
 app.MapControllers();
 

@@ -14,22 +14,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GenZStyleAPP.BAL.Errors;
-using Azure;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using JobScial.BAL.DTOs.Posts;
+using JobScial.BAL.DTOs.FireBase;
+using System.Collections;
+using System.Security.Principal;
 
 namespace JobScial.BAL.Repositorys.Implementations
 {
     public class AccountRepository : IAccountRepository
     {
-        private UnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
-
+        private UnitOfWork _unitOfWork;
         //private IMapper _mapper;
         public AccountRepository(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = (UnitOfWork)unitOfWork;
-            _config = configuration;
+            this._config = configuration;
+
+        }
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            // Đường dẫn tới thư mục Uploads
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+            // Kiểm tra và tạo thư mục nếu chưa tồn tại
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            // Tạo tên file duy nhất cho file tải lên
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+
+            // Đường dẫn đầy đủ để lưu file
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            // Lưu file vào thư mục
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Trả về đường dẫn tương đối hoặc đường dẫn đầy đủ
+            return $"/Uploads/{fileName}";
         }
         private List<AccountCertificateDto> GetAccountCertificate(Account account)
         {
@@ -185,7 +215,10 @@ namespace JobScial.BAL.Repositorys.Implementations
                 AccountId = account.AccountId,
                 Email = account.Email,
                 FullName = account.FullName,
-                Username = account.FullNameSearch
+                Username = account.FullNameSearch,
+                Image = account.Image,
+                FollowerCount = _unitOfWork.followDAO.GetAll().Where(x => x.FollowedAccountId == account.AccountId).Count(),
+                FollowingCount = _unitOfWork.followDAO.GetAll().Where(x => x.AccountId == account.AccountId).Count()
             };
 
 
@@ -199,9 +232,22 @@ namespace JobScial.BAL.Repositorys.Implementations
             };
         }
 
-        public async Task<AccountProfileDto> GetProfileById(int accountId)
+        public async Task<AccountProfileDto> GetProfileById(int accountId, HttpContext httpContext)
         {
-            // Lấy tài khoản
+            string emailFromClaim = "";
+            try
+            {
+                JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
+                emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
+            var followList = _unitOfWork.followDAO.GetAll().ToList();
             var account = _unitOfWork.AccountDao.FindOne(acc => acc.AccountId == accountId);
             if (account == null)
             {
@@ -214,8 +260,17 @@ namespace JobScial.BAL.Repositorys.Implementations
                 AccountId = account.AccountId,
                 Email = account.Email,
                 FullName = account.FullName,
-                Username = account.FullNameSearch
+                Username = account.FullNameSearch,
+                Image = account.Image,
+                FollowerCount = followList.Where(x => x.FollowedAccountId == account.AccountId).Count(),
+                FollowingCount = followList.Where(x => x.AccountId == account.AccountId).Count(),
             };
+
+            if (accountStaff != null)
+            {
+                accountDto.IsFollowing = followList.Where(x => x.AccountId == account.AccountId && x.FollowedAccountId == accountStaff.AccountId).FirstOrDefault() != null ? true : false;
+                accountDto.IsFollowed = followList.Where(x => x.AccountId == accountStaff.AccountId && x.FollowedAccountId == account.AccountId).FirstOrDefault() != null ? true : false;
+            }
 
             // Tạo và trả về DTO
             return new AccountProfileDto
@@ -249,7 +304,7 @@ namespace JobScial.BAL.Repositorys.Implementations
                     Gender = registerRequest.Gender,
                     DoB = registerRequest.DoB,
                     CreatedOn = DateTime.Now,
-                    Image = registerRequest.Image,
+                    Image = "https://th.bing.com/th/id/OIP.VwIICGYTWhTPKuBRbnVLdgHaHa?w=980&h=980&rs=1&pid=ImgDetMain",
                     FullNameSearch = registerRequest.FullNameSearch,
 
                 };
@@ -300,7 +355,7 @@ namespace JobScial.BAL.Repositorys.Implementations
         }
         #endregion
 
-        public void DeleteAccount(int accountId)
+        public async Task DeleteAccount(int accountId)
         {
             var account = _unitOfWork.AccountDao.FindOne(a => a.AccountId == accountId);
 
@@ -309,17 +364,67 @@ namespace JobScial.BAL.Repositorys.Implementations
                 throw new Exception($"Account with ID {accountId} not found.");
             }
 
-            _unitOfWork.AccountDao.Delete(account);
+            account.Role = -1;
+
+            await _unitOfWork.AccountDAO.BanAccount(account);
 
             _unitOfWork.Commit();
         }
 
-        public async Task<List<AccountDto>> Get()
+        public async Task<List<AccountDto>> Get(HttpContext httpContext)
         {
+            string emailFromClaim = "";
+            try
+            {
+                JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
+                emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
             List<AccountDto> list = new List<AccountDto>();
             var accounts = _unitOfWork.AccountDao.GetAll();
-           
-            foreach(var account in accounts)
+            var followList = _unitOfWork.followDAO.GetAll().ToList();
+            foreach (var account in accounts)
+            {
+                if(account.Role != 0)
+                {
+                    var accountDto = new AccountDto
+                    {
+                        AccountId = account.AccountId,
+                        Email = account.Email,
+                        FullName = account.FullName,
+                        Username = account.FullNameSearch,
+                        Image = account.Image,
+                        Role = (int)account.Role,
+                        FollowerCount = followList.Where(x => x.FollowedAccountId == account.AccountId).Count()
+                    };
+
+                    if (accountStaff != null)
+                    {
+                        accountDto.IsFollowing = followList.Where(x => x.AccountId == account.AccountId && x.FollowedAccountId == accountStaff.AccountId).FirstOrDefault() != null ? true : false;
+                        accountDto.IsFollowed = followList.Where(x => x.AccountId == accountStaff.AccountId && x.FollowedAccountId == account.AccountId).FirstOrDefault() != null ? true : false;
+                    }
+
+                    list.Add(accountDto);
+                }
+                
+            }
+
+            return list;
+            
+        }
+
+        public async Task<List<AccountDto>> AdminGet()
+        {
+            List<AccountDto> list = new List<AccountDto>();
+            var accounts = _unitOfWork.AccountDao.GetAll().Where(x => x.Role != 2);
+
+            foreach (var account in accounts)
             {
 
                 var accountDto = new AccountDto
@@ -337,7 +442,7 @@ namespace JobScial.BAL.Repositorys.Implementations
             }
 
             return list;
-            
+
         }
 
         public async Task<bool> BanAccount(int accountId)
@@ -386,35 +491,84 @@ namespace JobScial.BAL.Repositorys.Implementations
                 return false; // Return false in case of failure
             }
         }
-
-        public async Task<CommonResponse> AddNewAccount(AddNewAccount addNewAccount)
+        public async Task<CommonResponse> ConnectAccount(int id, HttpContext httpContext)
         {
-            string AddAccountSuccessedMsg = _config["ResponseMessages:CommonMsg:AddAccountSuccessedMsg"];
+            string loginSuccessMsg = _config["ResponseMessages:AuthenticationMsg:UnauthenticationMsg"];
+            string CreatePostSuccessedMsg = _config["ResponseMessages:CommonMsg:CreatePostSuccessedMsg"];
+            string NotCreateSuccessMsg = _config["ResponseMessages:RolePermissionMsg:NotCreateSuccessMsg"];
             CommonResponse commonResponse = new CommonResponse();
 
-            Account account = new Account
+            try
             {
-                CreatedOn = DateTime.Now,
-                Email = addNewAccount.Email,
-                DoB = addNewAccount.DoB,
-                FullName = addNewAccount.FullName,
-                FullNameSearch = addNewAccount.FullNameSearch,
-                Gender = addNewAccount.Gender,
-                Password = addNewAccount.Password,
-                Role = 3
-            };
-            
-            
-            await _unitOfWork.AccountDAO.AddNewAccount(account);
-            await _unitOfWork.CommitAsync();
+                JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
+                string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+                var accountStaff = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
 
-            commonResponse.Data = account;
-            commonResponse.Status = 200;
-            commonResponse.Message = AddAccountSuccessedMsg;
+
+                var checkExist = _unitOfWork.followDAO.GetAll().Where(x => x.AccountId == accountStaff.AccountId && x.FollowedAccountId == id).FirstOrDefault();
+                if (checkExist != null)
+                {
+                    _unitOfWork.followDAO.Delete(checkExist);
+                }
+                else
+                {
+                    Connection follow = new Connection();
+                    follow.FollowedAccountId = id;
+                    follow.AccountId = accountStaff.AccountId;
+                    follow.CreatedOn = DateTime.Now;
+                    _unitOfWork.followDAO.Add(follow);
+                }
+
+                await _unitOfWork.CommitAsync();
+
+                commonResponse.Status = 200;
+                commonResponse.Message = CreatePostSuccessedMsg;
+                return commonResponse;
+            }
+            catch (Exception ex)
+            {
+                commonResponse.Message = ex.Message;
+                commonResponse.Status = 500; // Internal Server Error
+            }
             return commonResponse;
         }
 
-        public async Task<CommonResponse> UpdateAccount(int accountId,UpdateAccountRequest updateAccountRequest)
+        public async Task<CommonResponse> ChangeImageAsync(CreatePostRequest post, HttpContext httpContext, FireBaseImage fireBaseImage)
+        {
+            string loginSuccessMsg = _config["ResponseMessages:AuthenticationMsg:UnauthenticationMsg"];
+            string CreatePostSuccessedMsg = _config["ResponseMessages:CommonMsg:CreatePostSuccessedMsg"];
+            string NotCreateSuccessMsg = _config["ResponseMessages:RolePermissionMsg:NotCreateSuccessMsg"];
+            CommonResponse commonResponse = new CommonResponse();
+
+            try
+            {
+                FileHelper.SetCredentials(fireBaseImage);
+                FileStream fileStream = FileHelper.ConvertFormFileToStream(post.Link[0]);
+                Tuple<string, string> result = await FileHelper.UploadImage(fileStream, "Post");
+
+                JwtSecurityToken jwtSecurityToken = TokenHelper.ReadToken(httpContext);
+                string emailFromClaim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+                var account = await _unitOfWork.AccountDAO.GetAccountByEmail(emailFromClaim);
+
+                account.Image = result.Item1;
+                
+                await _unitOfWork.AccountDAO.UpdateImage(account);
+
+                _unitOfWork.Commit();
+                commonResponse.Status = 200;
+                commonResponse.Message = CreatePostSuccessedMsg;
+                return commonResponse;
+            }
+            catch (Exception ex)
+            {
+                commonResponse.Message = ex.Message;
+                commonResponse.Status = 500; // Internal Server Error
+            }
+            return commonResponse;
+
+        }
+
+        public async Task<CommonResponse> UpdateAccount(int accountId, UpdateAccountRequest updateAccountRequest)
         {
             string UploadImageSuccessedMsg = _config["ResponseMessages:CommonMsg:UploadImageSuccessedMsg"];
 
@@ -431,7 +585,7 @@ namespace JobScial.BAL.Repositorys.Implementations
             account.Password = updateAccountRequest.Password;
             account.DoB = updateAccountRequest.DoB;
             account.Email = updateAccountRequest.Email;
-            
+
 
             await _unitOfWork.AccountDAO.UpdateAccount(account);
             await this._unitOfWork.CommitAsync();
@@ -440,6 +594,45 @@ namespace JobScial.BAL.Repositorys.Implementations
             commonResponse.Status = 200;
             commonResponse.Message = "Update Account Successfully";
             return commonResponse;
+        }
+
+        public async Task<List<AccountDto>> GetByProfileFollow(int accountId, HttpContext httpContext)
+        {
+            List<int> listAccountPosts = new List<int>();
+
+            var lst = (_unitOfWork.followDAO.GetAll()).Where(x => x.AccountId == accountId);
+            //var lst = (await _unitOfWork.PostDAO.GetPosts()).Where(x => x.CreatedBy == accountId);
+
+            listAccountPosts = (from s in lst select s.FollowedAccountId).ToList();
+
+            var lstByHostID = await Get(httpContext);
+            var result = lstByHostID.Where(b => listAccountPosts.Any(a => a == b.AccountId)).ToList();
+
+            return result;
+        }
+
+        public async Task<bool> ConfirmAccount(int accountId)
+        {
+            var account = await _unitOfWork.AccountDAO.GetAccountById(accountId);
+
+            if (account == null)
+            {
+                return false; // Return false if account not found
+            }
+
+            account.Role = 1;
+
+            try
+            {
+                await _unitOfWork.AccountDAO.BanAccount(account);
+                await _unitOfWork.CommitAsync();
+                return true; // Successfully banned
+            }
+            catch
+            {
+                // Optionally log the error here (if you have a logging mechanism)
+                return false; // Return false in case of failure
+            }
         }
     }
 }

@@ -18,13 +18,13 @@ namespace JobScial.DAL.Infrastructures
         private PostDAO _postDAO;
         private CommentDAO _commentDAO;
         private AccountDao _accountDao;
-        private LikeDAO _likeDAO;
+        private LikeDao _likeDAO;
+        private ConnectionDao _followDAO;
         private PostPhotoDAO _postPhotoDAO;
         private SkillCategoryDAO _skillCategoryDAO;
         private PostSkillDao _postSkillDao;
         private PostCategoryDAO _PostCategoryDao;
         private JobTitleDAO _JobTitleDAO;
-        private GroupDAO _groupDAO;
 
 
 
@@ -76,17 +76,6 @@ namespace JobScial.DAL.Infrastructures
                     _JobTitleDAO = new JobTitleDAO(_dbContext);
                 }
                 return _JobTitleDAO;
-            }
-        }
-        public GroupDAO groupDAO
-        {
-            get
-            {
-                if (_groupDAO == null)
-                {
-                    _groupDAO = new GroupDAO(_dbContext);
-                }
-                return _groupDAO;
             }
         }
 
@@ -213,15 +202,27 @@ namespace JobScial.DAL.Infrastructures
                 return _postDAO;
             }
         }
-        public LikeDAO likeDAO
+        public LikeDao likeDAO
         {
             get
             {
                 if (_likeDAO == null)
                 {
-                    _likeDAO = new LikeDAO(_dbContext);
+                    _likeDAO = new LikeDao(_dbContext);
                 }
                 return _likeDAO;
+            }
+        }
+
+        public ConnectionDao followDAO
+        {
+            get
+            {
+                if (_followDAO == null)
+                {
+                    _followDAO = new ConnectionDao(_dbContext);
+                }
+                return _followDAO;
             }
         }
 

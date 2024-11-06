@@ -16,14 +16,30 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+
 using System.Reflection.Emit;
 using JobScial.BAL.DTOs.FireBase;
 using JobScial.BAL.Models;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+if (emailConfig != null)
+{
+    builder.Services.AddSingleton<EmailConfiguration>(emailConfig);
+}
 
+builder.Services.Configure<FireBaseImage>(builder.Configuration.GetSection("FireBaseImage"));
+builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
 // Add services to the container.
+builder.Services.Configure<IdentityOptions>(
+opts => opts.SignIn.RequireConfirmedEmail = true
+    );
+builder.Services.AddControllersWithViews();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<JobSocialContext>()
+                .AddDefaultTokenProviders();
 
 var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<Account>("Accounts");
@@ -57,21 +73,21 @@ builder.Services.AddDbContext<JobSocialContext>(options =>
 
 
 //Dependency Injections
-builder.Services.AddScoped<IEmailRepository, EmailRepository>();
-builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
+
 builder.Services.AddScoped<IDbFactory, DbFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IlikeRepository, LikeRepository>();
+//builder.Services.AddScoped<IlikeRepository, LikeRepository>();
 builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
 builder.Services.AddScoped<ISharedRepository, SharedRepository>();
 builder.Services.AddScoped<IAccountCertRepository, AccountCertRepository>();
 builder.Services.AddScoped<IAccountEduRepository, AccountEduRepository>();
 builder.Services.AddScoped<IAccountExpRepository, AccountExpRepository>();
-builder.Services.AddScoped<EmailConfiguration>();
+builder.Services.AddScoped<UserManager<IdentityUser>>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IAccountSkillRepository, AccountSkillRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.Configure<FireBaseImage>(builder.Configuration.GetSection("FireBaseImage"));
@@ -104,7 +120,7 @@ new OpenApiSecurityRequirement()
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "JobSocial Store Application API",
+        Title = "GenZStyle Store Application API",
         Description = "JWT Authentication API"
     });
 
@@ -142,7 +158,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters() 
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = false,
         ValidateAudience = false,
@@ -164,19 +180,7 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader(); // Cho phép tất cả các header
     });
 });
-var configuration = builder.Configuration;
-//Add Config for Required Email
-builder.Services.Configure<IdentityOptions>(
-opts => opts.SignIn.RequireConfirmedEmail = true
-    );
-builder.Services.AddControllersWithViews();
-//Add Email Configs
-var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-builder.Services.AddSingleton(emailConfig);
-// For Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<JobSocialContext>()
-                .AddDefaultTokenProviders();
+
 
 
 var app = builder.Build();
@@ -195,8 +199,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseAuthentication();
-
 
 app.MapControllers();
 

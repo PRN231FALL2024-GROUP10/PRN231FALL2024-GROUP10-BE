@@ -68,17 +68,6 @@ namespace JobScial.DAL.DAOs
             {
                 return await _dbContext.PostPhotos
                     .Where(x => x.PostId == id)
-                    .Select(x => new
-                    {
-                        x.PostId,
-                        x.Link,
-                    })
-                    .Distinct() // Loại bỏ các bản ghi trùng lặp
-                    .Select(x => new PostPhoto // Tạo lại đối tượng NewsTagg mới từ các thuộc tính
-                    {
-                        PostId = x.PostId,
-                        Link = x.Link,
-                    })
                     .ToListAsync();
             }
             catch (Exception ex)

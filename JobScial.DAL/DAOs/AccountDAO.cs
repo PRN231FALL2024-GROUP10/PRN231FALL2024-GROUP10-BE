@@ -44,8 +44,7 @@ namespace JobScial.DAL.DAOs
             {
                 throw new Exception(ex.Message);
             }
-        }
-        public async Task<Account> GetAccountById(int id)
+        }        public async Task<Account> GetAccountById(int id)
         {
 
             try
@@ -98,6 +97,8 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+
+
         #region Update Account
         public async Task UpdateAccount(Account account)
         {
@@ -111,7 +112,18 @@ namespace JobScial.DAL.DAOs
             }
         }
         #endregion
+        public async Task UpdateImage(Account account)
+        {
+            try
+            {
+                _dbContext.Entry(account).Property(a => a.Image).IsModified = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 
-}
 
+}

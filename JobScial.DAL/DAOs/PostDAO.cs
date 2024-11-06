@@ -49,7 +49,7 @@ namespace JobScial.DAL.DAOs
 
                 List<Post> posts = await _dbContext.Posts
                     .AsNoTracking()
-                    .Where(p => p.PrivateLevel != 0) 
+					.Where(p => p.PrivateLevel != -1)
                     .Include(m => m.Likes)
                     .Include(m => m.Comments)
                     .Include(m => m.Job)
@@ -61,7 +61,7 @@ namespace JobScial.DAL.DAOs
                 return posts;
 
             }
-            catch (Exception ex)   
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -78,6 +78,20 @@ namespace JobScial.DAL.DAOs
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task DeletePost(Post post)
+        {
+            try
+            {
+                _dbContext.Posts.Attach(post);
+
+                _dbContext.Entry(post).Property(a => a.PrivateLevel).IsModified = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         #endregion
         public async Task<List<Post>> GetPostsByUserid(int userId)
         {
@@ -85,7 +99,7 @@ namespace JobScial.DAL.DAOs
             {
                 List<Post> posts = await _dbContext.Posts
                     .AsNoTracking()
-                    .Where(p => p.PrivateLevel != 0)
+					.Where(p => p.PrivateLevel != -1)
                     .Include(m => m.Likes)
                     .Include(m => m.Comments)
                     .Include(m => m.Job)

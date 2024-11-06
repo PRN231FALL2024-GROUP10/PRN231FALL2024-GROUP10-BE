@@ -15,21 +15,31 @@ namespace JobScial.BAL.Repositorys.Interfaces
      public interface  IPostRepository
     {
         // Thêm bài viết mới
-        Task<CommonResponse> AddPostAsync(CreatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext);
+        Task<CommonResponse> AddPostAsync(CreatePostRequest post, HttpContext httpContext);
+
+        Task<CommonResponse> AddPostPhotoAsync(int postId, List<IFormFile>? links, HttpContext httpContext, FireBaseImage fireBaseImage);
 
         // Sửa bài viết
-        Task<CommonResponse> UpdatePostAsync(UpdatePostRequest post, FireBaseImage fireBaseImage, HttpContext httpContext, int id);
+        Task<CommonResponse> UpdatePostAsync(CreatePostRequest post, HttpContext httpContext, int id);
+        Task<CommonResponse> UpdatePostPhotoAsync(CreatePostRequest post, HttpContext httpContext, int id, FireBaseImage fireBaseImage);
 
         // Xóa bài viết theo id
-        Task<bool> DeletePostAsync(int postId);
+        Task DeletePostAsync(int postId);
 
         // Lấy bài viết theo id
         Task<Post> GetPostByIdAsync(int postId);
 
+        Task<List<GetPostResponse>> GetPostByAccountIdAsync(int accountId, HttpContext httpContext);
+        Task<List<GetPostResponse>> GetPostByAccountLikeIdAsync(int accountId, HttpContext httpContext);
+        Task<List<GetPostResponse>> GetPostByAccountCommentIdAsync(int accountId, HttpContext httpContext);
+
         // Lấy tất cả bài viết
         Task<List<GetPostResponse>> GetAllPostsAsync(HttpContext httpContext);
+
         Task<List<GetPostResponse>> GetAllPostsByUser(HttpContext httpContext);
 
         Task<List<Post>> GetPostByUserName(string username);
+
+        Task<CommonResponse> LikePost(int id, HttpContext httpContext);
     }
 }

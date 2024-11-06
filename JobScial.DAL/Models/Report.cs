@@ -20,7 +20,4 @@ public partial class Report
 
     public Guid? CreatedBy { get; set; }
 
-    public virtual Post? Report1 { get; set; }
-
-    public virtual Comment? ReportNavigation { get; set; }
 }

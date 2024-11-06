@@ -29,8 +29,6 @@ public partial class Post
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Follow> Follows { get; set; } = new List<Follow>();
-
     public virtual Group? Group { get; set; }
 
     public virtual JobTitle? Job { get; set; }

@@ -9,6 +9,9 @@ public partial class PostSkill
     public int PostId { get; set; }
 
     public int? SkillCategoryId { get; set; }
+    public int? YearRequirement { get; set; }
+
+    public string? SkillLevelRequirement { get; set; }
     [JsonIgnore]
 
     public virtual Post Post { get; set; } = null!;

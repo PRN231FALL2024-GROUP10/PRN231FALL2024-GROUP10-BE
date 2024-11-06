@@ -25,3 +25,4 @@ public partial class Comment
 
     public virtual Post? Post { get; set; }
 }
+

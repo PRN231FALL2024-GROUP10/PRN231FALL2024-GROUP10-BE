@@ -11,47 +11,116 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using GenZStyleAPP.BAL.Errors;
 using JobScial.BAL.DTOs.Posts;
+using JobScial.BAL.DTOs.FireBase;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
-using Azure;
-using JobScial.WebAPI.Models;
-using JobScial.BAL.Repositorys.Implementations;
-using JobScial.BAL.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using JobScial.BAL.Authorization;
 
 namespace JobScial.WebAPI.Controllers
 {
-    public class AccountsController : ODataController 
+    public class AccountsController : ODataController
     {
         private readonly UserManager<IdentityUser> _userManager;
         //private IValidator<RegisterRequest> _registerValidator;
         private IAccountRepository _accountRepository;
-        private  IEmailRepository _emailRepository;
-
-        public AccountsController(UserManager<IdentityUser> userManager,IAccountRepository accountRepository, IUnitOfWork unitOfWork, IEmailRepository emailRepository)
+        private IEmailRepository _emailRepository;
+        private IOptions<FireBaseImage> _firebaseImageOptions;
+        public AccountsController(UserManager<IdentityUser> userManager, IAccountRepository accountRepository, IUnitOfWork unitOfWork, IEmailRepository emailRepository,
+           IOptions<FireBaseImage> firebaseImageOptions)
         {
             _accountRepository = accountRepository;
             _emailRepository = emailRepository;
             _userManager = userManager;
+            _firebaseImageOptions = firebaseImageOptions;
         }
-        [PermissionAuthorize("Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
         [HttpGet("Accounts")]
         public async Task<IActionResult> GetAccount()
         {
             try
             {
-                return Ok(_accountRepository.Get());
+                return Ok(await _accountRepository.Get(HttpContext));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
             }
         }
+
+        [HttpGet("Admin/Accounts")]
+        [PermissionAuthorize("2", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetAccountAdmin()
+        {
+            try
+            {
+                return Ok(_accountRepository.AdminGet());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
+            }
+        }
+
+        [HttpPost("Accounts/{accId}/follow")]
+        public async Task<IActionResult> FollowAccount([FromRoute] int accId)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+            try
+            {
+                commonResponse = await this._accountRepository.ConnectAccount(accId, HttpContext);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "Update Follow Successfully");
+                    case 405:
+                        return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
+
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Accounts/image")]
+        public async Task<IActionResult> SaveAvatar([FromForm] CreatePostRequest request)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+            try
+            {
+                commonResponse = await this._accountRepository.ChangeImageAsync(request, HttpContext, _firebaseImageOptions.Value);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "OK");
+
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+
+            }
+
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex) // Xử lý các exception không mong muốn khác
+            {
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
+
+        }
+
         [HttpGet("accounts/{Id}")]
         public async Task<IActionResult> GetDetailsAccountById([FromRoute] int Id)
         {
             try
             {
-                var account = await _accountRepository.GetProfileById(Id);
+                var account = await _accountRepository.GetProfileById(Id, HttpContext);
                 return Ok(account);
             }
             catch (Exception ex)
@@ -59,15 +128,16 @@ namespace JobScial.WebAPI.Controllers
                 return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
             }
         }
+
         #region Delete Account
 
         [HttpDelete("{accountId}")]
-        [PermissionAuthorize("Admin")]
+        [PermissionAuthorize("2", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteAccount([FromRoute] int accountId)
         {
             try
             {
-                _accountRepository.DeleteAccount(accountId);
+                await _accountRepository.DeleteAccount(accountId);
 
                 return Ok(new { Message = "Account deleted successfully." });
             }
@@ -99,7 +169,7 @@ namespace JobScial.WebAPI.Controllers
                 _emailRepository.SendEmail(message);
                 GetAccountResponse customer = await this._accountRepository
                 .Register(registerRequest);
-                
+
                 return Ok(new
                 {
                     Status = $"User created & Email sent to {customer.Email} Successfully",
@@ -111,6 +181,7 @@ namespace JobScial.WebAPI.Controllers
                 return StatusCode(500, new { Message = "An error occurred while processing your request.", Error = ex.Message });
             }
         }
+
         #endregion
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -118,21 +189,19 @@ namespace JobScial.WebAPI.Controllers
             var user = await _accountRepository.GetProfileByEmail(email);
             if (user != null)
             {
-
+                await _accountRepository.ConfirmAccount(user.Account.AccountId);
                 var viewResult = new ViewResult
                 {
                     ViewName = "EmailConfirmationSuccess" // Tên view bạn muốn trả về
                 };
                 return viewResult;
-
-
             }
             return StatusCode(StatusCodes.Status500InternalServerError,
                        new JobScial.WebAPI.Models.Response { Status = "Error", Message = "This User Doesnot exist!" });
         }
+
         [HttpPost("Account/BanAccount/{Id}")]
-        [PermissionAuthorize("Admin")]
-        [EnableQuery]
+        [PermissionAuthorize("2", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> BanAccount(int Id)
         {
             // Validate the input
@@ -161,41 +230,38 @@ namespace JobScial.WebAPI.Controllers
                 return StatusCode(500, new { Success = false, Message = $"An error occurred: {ex.Message}" });
             }
         }
-        [HttpPost("Account/CreateNewAccount")]
-        [EnableQuery]
-        [PermissionAuthorize("Admin")]
-        //[PermissionAuthorize("Staff")]
-        public async Task<IActionResult> AddNewAccount([FromBody] AddNewAccount addNewAccount)
-        {
-            CommonResponse commonResponse = new CommonResponse();
-            try
-            {
+        //        [HttpPost("Account/CreateNewAccount")]
+        //        [EnableQuery]
+        //        //[PermissionAuthorize("Staff")]
+        //        public async Task<IActionResult> AddNewAccount([FromBody] AddNewAccount addNewAccount)
+        //        {
+        //            CommonResponse commonResponse = new CommonResponse();
+        //            try
+        //            {
 
-                commonResponse = await this._accountRepository.AddNewAccount(addNewAccount);
-                switch (commonResponse.Status)
-                {
-                    case 200:
-                        return StatusCode(200, "Add Account Success");
-                    //return Ok(commonResponse);
-                    default:
-                        return StatusCode(500, commonResponse);
-                }
-            }
-            catch (BadRequestException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-/*            catch (Exception ex)
-            {
-                // Xử lý các ngoại lệ khác
-                return StatusCode(500, "Internal Server Error");
-            }*/
+        //                commonResponse = await this._accountRepository.AddNewAccount(addNewAccount);
+        //                switch (commonResponse.Status)
+        //                {
+        //                    case 200:
+        //                        return StatusCode(200, "Add Account Success");
+        //                    //return Ok(commonResponse);
+        //                    default:
+        //                        return StatusCode(500, commonResponse);
+        //                }
+        //            }
+        //            catch (BadRequestException ex)
+        //            {
+        //                return BadRequest(ex.Message);
+        //            }
+        ///*            catch (Exception ex)
+        //            {
+        //                // Xử lý các ngoại lệ khác
+        //                return StatusCode(500, "Internal Server Error");
+        //            }*/
 
-        }
+        //        }
         [HttpPut("Account/{key}/UpdateAccount")]
-        [PermissionAuthorize("Admin")]
-        [EnableQuery]
-        //[PermissionAuthorize("Customer", "Store Owner")]
+        [PermissionAuthorize("2", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Put([FromRoute] int key, [FromBody] UpdateAccountRequest updateAccountRequest)
         {
             CommonResponse commonResponse = new CommonResponse();
@@ -212,7 +278,7 @@ namespace JobScial.WebAPI.Controllers
 
                     default:
                         return StatusCode(500, commonResponse);
-                        
+
                 }
             }
             catch (Exception ex)
@@ -221,9 +287,9 @@ namespace JobScial.WebAPI.Controllers
             }
 
         }
-        [HttpPost("Account/UnlockAccount/{Id}")]
-        [PermissionAuthorize("Admin")]
 
+        [HttpPost("Account/UnlockAccount/{Id}")]
+        [PermissionAuthorize("2", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UnlockAccount(int Id)
         {
             // Validate the input

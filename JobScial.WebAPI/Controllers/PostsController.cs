@@ -5,10 +5,11 @@ using JobScial.BAL.DTOs.Posts;
 using JobScial.DAL.Models;
 using JobScial.BAL.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using JobScial.BAL.Repositorys.Implementations;
 using JobScial.BAL.DTOs.FireBase;
+using Microsoft.Extensions.Options;
 
 namespace JobScial.WebAPI.Controllers
 {
@@ -18,10 +19,9 @@ namespace JobScial.WebAPI.Controllers
         private readonly ILogger<PostsController> _logger;
         private IOptions<FireBaseImage> _firebaseImageOptions;
 
-
-        public PostsController(IPostRepository postRepository, 
-            ILogger<PostsController> logger,
-            IOptions<FireBaseImage> firebaseImageOptions)
+        public PostsController(IPostRepository postRepository,
+           ILogger<PostsController> logger,
+           IOptions<FireBaseImage> firebaseImageOptions)
         {
             _postRepository = postRepository;
             _logger = logger;
@@ -32,7 +32,7 @@ namespace JobScial.WebAPI.Controllers
 
         [HttpPost("Post/AddNewPost")]
         //[PermissionAuthorize("Staff")]
-        public async Task<IActionResult> Post([FromForm] CreatePostRequest createPostRequest)
+        public async Task<IActionResult> Post([FromBody] CreatePostRequest createPostRequest)
         {
             CommonResponse commonResponse = new CommonResponse();
             try
@@ -46,12 +46,11 @@ namespace JobScial.WebAPI.Controllers
                 }*/
                 // Kiểm tra xem có dữ liệu trong createPostRequest không
 
-                commonResponse = await this._postRepository.AddPostAsync(createPostRequest,_firebaseImageOptions.Value , HttpContext);
+                commonResponse = await this._postRepository.AddPostAsync(createPostRequest, HttpContext);
                 switch (commonResponse.Status)
                 {
                     case 200:
-                        return StatusCode(200, "Add Post Success");
-                    //return Ok(commonResponse);
+                        return StatusCode(200, commonResponse);
 
                     default:
                         return StatusCode(500, commonResponse);
@@ -67,7 +66,36 @@ namespace JobScial.WebAPI.Controllers
             {
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
-            return Ok(); // Trả về phản hồi
+
+        }
+
+        
+        [HttpPost("Post/AddNewPost/{postID}/photo")]
+        public async Task<IActionResult> SavePhoto([FromForm] CreatePostRequest request, [FromRoute] int postID)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+            try
+            {
+                commonResponse = await this._postRepository.AddPostPhotoAsync(postID, request.Link, HttpContext, _firebaseImageOptions.Value);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "OK");
+
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+
+            }
+
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex) // Xử lý các exception không mong muốn khác
+            {
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
 
         }
 
@@ -87,7 +115,7 @@ namespace JobScial.WebAPI.Controllers
             // Return the list of active posts
             return Ok(activePosts);
         }
-        [HttpGet("Post/PostByUser")]
+		[HttpGet("Post/PostByUser")]
         [EnableQuery]
         public async Task<IActionResult> GetActivePostsByUser()
         {
@@ -103,16 +131,32 @@ namespace JobScial.WebAPI.Controllers
             // Return the list of active posts
             return Ok(activePosts);
         }
+        [HttpGet("Post/Active/{postID}")]
+        public async Task<IActionResult> GetPostByID([FromRoute] int postID) 
+        {
+            // Retrieve all posts, mapping to GetPostResponse
+            var activePosts = (await _postRepository.GetAllPostsAsync(HttpContext)).Where(x => x.PostID == postID).FirstOrDefault();
+
+            // Check if posts exist
+            if (activePosts == null)
+            {
+                return NotFound(new { Message = "Post not found." });
+            }
+
+            // Return the list of active posts
+            return Ok(activePosts);
+        }
+
+
         [HttpPut("Post/{key}/UpdatePost")]
-        //[PermissionAuthorize("Customer", "Store Owner")]
-        public async Task<IActionResult> Put([FromRoute] int key, [FromForm] UpdatePostRequest updatePostRequest)
+        public async Task<IActionResult> Put([FromRoute] int key, [FromBody] CreatePostRequest request)
         {
             CommonResponse commonResponse = new CommonResponse();
 
             try
             {
             
-                commonResponse = await this._postRepository.UpdatePostAsync(updatePostRequest, _firebaseImageOptions.Value, HttpContext, key);
+                commonResponse = await this._postRepository.UpdatePostAsync(request, HttpContext, key);
                 switch (commonResponse.Status)
                 {
                     case 200:
@@ -128,8 +172,7 @@ namespace JobScial.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpGet("Post/GetPostByUserName")]
+		[HttpGet("Post/GetPostByUserName")]
         //[PermissionAuthorize("Customer", "Store Owner")]
         public async Task<IActionResult> GetPostUser(string name)
         {
@@ -168,16 +211,61 @@ namespace JobScial.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        #region 
-        [EnableQuery]
+        [HttpPost("Post/{key}/UpdatePost/photo")]
+        public async Task<IActionResult> UpdatePhoto([FromRoute] int key, [FromForm] CreatePostRequest request)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+
+            try
+            {
+
+                commonResponse = await this._postRepository.UpdatePostPhotoAsync(request, HttpContext, key, _firebaseImageOptions.Value);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "Update Success");
+                    case 405:
+                        return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("Post/DeletePost/{id}")]
-        //[PermissionAuthorize("Store Owner")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             await _postRepository.DeletePostAsync(id);
             return NoContent();
         }
-        #endregion
+
+        [HttpPost("Post/{postId}/Like")]
+        public async Task<IActionResult> LikePost([FromRoute] int postId)
+        {
+            CommonResponse commonResponse = new CommonResponse();
+            try
+            {
+                commonResponse = await this._postRepository.LikePost(postId, HttpContext);
+                switch (commonResponse.Status)
+                {
+                    case 200:
+                        return StatusCode(200, "Update like successfully");
+                    case 405:
+                        return StatusCode(405, "Method Not Allowed: This URL picture not safe to post .");
+
+                    default:
+                        return StatusCode(500, commonResponse);
+                }
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
 

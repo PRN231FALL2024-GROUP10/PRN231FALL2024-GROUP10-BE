@@ -79,6 +79,19 @@ namespace JobScial.DAL.DAOs.Implements
 
     }
 
+    public class ConnectionDao : Dao<Connection>, IConnectionDao
+    {
+        public ConnectionDao(JobSocialContext context) : base(context) { }
+
+    }
+
+    public class LikeDao : Dao<Like>, ILikeDao
+    {
+        public LikeDao(JobSocialContext context) : base(context) { }
+
+    }
+
+
     public class Dao<TEntity> : IDao<TEntity> where TEntity : class
     {
         protected readonly JobSocialContext _context;

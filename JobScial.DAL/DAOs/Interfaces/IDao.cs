@@ -49,6 +49,14 @@ namespace JobScial.DAL.DAOs.Interfaces
     {
     }
 
+    public interface IConnectionDao : IDao<Connection>
+    {
+    }
+
+    public interface ILikeDao : IDao<Like>
+    {
+    }
+
     public interface ISkillDao : IDao<SkillCategory>
     {
     }
